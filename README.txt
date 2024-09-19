@@ -1,6 +1,6 @@
 Zachary Burd and Jeremy Estes
 
-Makefile can be used to comprehensively compile project.
+Makefile is work in progress.
 
 To compile and use lexer individually:
 
