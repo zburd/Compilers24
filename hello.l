@@ -63,7 +63,7 @@ WHITESPACE [ |\t]*
 IDENTIFIER [a-zA-Z$_][a-zA-Z0-9$_]{0,31}
 SCONSTANT "\""([^"\\]|\\.)*"\""
 ICONSTANT [0-9]+
-DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))
+DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 %%
 {K_DO} { printf("%s: K_DO \n", yytext); }
 {K_DOUBLE} { printf("%s: K_DOUBLE \n", yytext); }

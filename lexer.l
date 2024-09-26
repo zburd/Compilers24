@@ -125,7 +125,7 @@ WHITESPACE [ |\t]*
 IDENTIFIER [a-zA-Z$_][a-zA-Z0-9$_]{0,31}
 SCONSTANT "\""([^"\\]|\\.)*"\""
 ICONSTANT [0-9]+
-DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))
+DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 %%
 {K_DO} { return K_DO; }
 {K_DOUBLE} { return K_DOUBLE; }
