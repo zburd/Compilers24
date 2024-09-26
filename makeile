@@ -1,7 +1,0 @@
-lex.yy.c: lexer.l
-  flex lexer.l
-
-comp: main.c hash.c
-  gcc -o a.out main.c hash.c -I.
-
-main.c: lex.yy.c
