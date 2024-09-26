@@ -1,7 +1,5 @@
 .PHONY: all flex lex.yy.c a.exe clean
 
-.PHONY all flex lex.yy.c a.exe clean
-
 all: flex lex.yy.c a.exe
 
 flex:
