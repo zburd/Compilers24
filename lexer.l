@@ -1,6 +1,7 @@
 %{
-#include<stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include "y.tab.h"
 
 #define K_DO               1
 #define K_DOUBLE           2
