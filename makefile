@@ -1,6 +1,6 @@
 .PHONY: all flex lex.yy.c a.exe clean
 
-all: flex lex.yy.c a.exe
+all: flex lex.yy.c a.exe clean
 
 flex:
 	@flex lexer.l
