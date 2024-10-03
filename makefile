@@ -1,6 +1,6 @@
-.PHONY: all flex lex.yy.c a.exe clean
+.PHONY: all flex lex.yy.c a.out clean
 
-all: flex lex.yy.c a.exe clean
+all: flex lex.yy.c a.out clean
 
 flex:
 	@flex lexer.l
@@ -8,7 +8,7 @@ flex:
 lex.yy.c:
 	@gcc lex.yy.c
 
-a.exe:
+a.out:
 	@./a.out
 
 clean:
