@@ -55,7 +55,7 @@
 %token RCURLY
 %token RPAREN
 %token SEMI
-%token
+
 %token IDENTIFIER 
 %token SCONSTANT
 %token ICONSTANT
