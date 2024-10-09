@@ -61,6 +61,179 @@
 %token ICONSTANT
 %token DCONSTANT
 
+%start Program
+
 %%
 
+/* TODO
+//make sure the function can have curlys after any amount of indentation
+//make sure the same is true for parenthesis and brakets
+//add in components for tree representation later
+//get rid of this line last after double checking.
+*/
+Program:
+    K_PROGRAM IDENTIFIER RCURLY Outside LCURLY;
 
+/* TODO
+//make sure empty lines are fine to have example below
+
+//example above
+*/
+Outside:
+    Function Outside
+    | Line SEMI Outside
+    | /* empty */;
+
+
+Function:
+    Type IDENTIFIER LPAREN Variables RPAREN RCURLY Inside LCURLY;
+/* TODO
+//check if this is all a line can do
+//also it gets it semicolin when called
+*/
+Line:
+    Define
+    | SetEqualTo
+    | Action;
+
+/* TODO
+//make types of the type instead of the tokens
+*/
+Type:
+    DCONSTANT
+    | ICONSTANT
+    | SCONSTANT;
+Variables:
+    Type IDENTIFIER
+    | Type IDENTIFIER COMMA Variable
+    | /* empty */;
+/* TODO
+//add in empty lines
+*/
+Inside:
+    Line SEMI
+    | Line SEMI Inside
+    | /* empty */;
+Define:
+    Type IDENTIFIER;
+/* TODO
+//add in ability to have an identifier equal a function
+*/
+SetEqualTo:
+    IDENTIFIER ASSIGN Expression;
+Action:
+    Keyed
+    | UserMade;
+
+
+Variable:
+    Type IDENTIFIER
+    | Type IDENTIFIER COMMA Variable;
+Expression:
+    String
+    | Integer
+    | Double;
+/* TODO
+//Make sure all function keys are accounted for
+*/
+Keyed:
+    Print
+    | Read
+    | If
+    | Else
+    | Do
+    | While;
+UserMade:
+    IDENTIFIER LPAREN Variables RPAREN;
+
+
+String:
+    IDENTIFIER
+    | SCONSTANT;
+Integer:
+    Mathi;
+Double:
+    Mathd;
+Print:
+    K_PRINT_INTEGER LPAREN Integer RPAREN
+    | K_PRINT_DOUBLE LPAREN Double RPAREN
+    | K_PRINT_STRING LPAREN String RPAREN;
+Read:
+    K_READ_INTEGER LPAREN Integer RPAREN
+    | K_READ_DOUBLE LPAREN Double RPAREN
+    | K_READ_STRING LPAREN String RPAREN;
+If:
+    K_IF LPAREN Equality RPAREN LCURLY Inside RCURLY;
+Else:
+    K_ELSE K_IF LPAREN Equality RPAREN LCURLY Inside RCURLY
+    | K_ELSE LCURLY Inside RCURLY;
+/* TODO
+//fix so that it can be a good for statment
+*/
+Do:
+    K_DO K_UNTIL LPAREN Equality RPAREN LCURLY Inside RCURLY;
+/* TODO
+//double check to see if the while statment is correct
+*/
+While:
+    K_DO K_WHILE LPAREN Equality RPAREN LCURLY Inside RCURLY;
+
+/* TODO
+//add in any math expresions i forgot
+*/
+Mathi:
+    Mathi PLUS Termi
+    | Mathi PLUS Termi
+    | Termi;
+Mathd:
+    Mathd PLUS Termd
+    | Mathd PLUS Termd
+    | Termd;
+Equality:
+    Equality DAND Statment
+    | Equality DOR Statment
+    | Statment;
+
+
+Termi:
+    Termi MULTIPLY Factori
+    | Termi DIVIDE Factori
+    | Factori;
+Termd:
+    Termd MULTIPLY Factord
+    | Termd DIVIDE Factord
+    | Factord;
+/* TODO
+//double check statments to make sure everything is set up properly
+*/
+Statment:
+    Integer DEQ Integer
+    | Double DEQ Double
+    | String DEQ String
+    | Integer GEQ Integer
+    | Double GEQ Double
+    | Integer GT Integer
+    | Double GT Double
+    | Integer LEQ Integer
+    | Double LEQ Double
+    | Integer LT Integer
+    | Double LT Double
+    | Integer NE Integer
+    | Double NE Double
+    | NOT LPAREN Equality RPAREN
+    | 'True'
+    | 'False';
+
+
+Factori:
+    IDENTIFIER
+    | K_INTEGER
+    | LPAREN Mathi RPAREN
+    | MINUS Mathi;
+Factord:
+    IDENTIFIER
+    | K_DOUBLE
+    | LPAREN Mathd RPAREN
+    | MINUS Mathd;
+
+%%
