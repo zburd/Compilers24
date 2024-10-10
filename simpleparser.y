@@ -66,19 +66,16 @@
 %%
 
 /* TODO
-//make sure the function can have curlys after any amount of indentation
-//make sure the same is true for parenthesis and brakets
 //add in components for tree representation later
+	{printf("++++++++++++++++++++++++++++++++++++++++++++++++\n+ Walking through the Parse Tree Begins Here\n++++++++++++++++++++++++++++++++++++++++++++++++\n");}//starter
+	{printf(“**Node %i: Reduced: name: (/*anything that involves actions and terminals*/)”, node);//node information}
+	{printf("****/*action name*/ -> /*simplest form of action name (e.g. IDENTIFIER a, parse tree node)*/ /*if not parse tree node then name of thing*/");//branch information}
+	{printf("****terminal symbol /*terminal name*/");}
 //get rid of this line last after double checking.
 */
 Program:
     K_PROGRAM IDENTIFIER RCURLY Outside LCURLY;
 
-/* TODO
-//make sure empty lines are fine to have example below
-
-//example above
-*/
 Outside:
     Function Outside
     | Line SEMI Outside
@@ -89,7 +86,7 @@ Function:
     Type IDENTIFIER LPAREN Variables RPAREN RCURLY Inside LCURLY;
 /* TODO
 //check if this is all a line can do
-//also it gets it semicolin when called
+//also it gets a semicolin when called above
 */
 Line:
     Define
@@ -107,9 +104,6 @@ Variables:
     Type IDENTIFIER
     | Type IDENTIFIER COMMA Variable
     | /* empty */;
-/* TODO
-//add in empty lines
-*/
 Inside:
     Line SEMI
     | Line SEMI Inside
