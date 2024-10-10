@@ -68,9 +68,9 @@
 /* TODO
 //add in components for tree representation later
 	{printf("++++++++++++++++++++++++++++++++++++++++++++++++\n+ Walking through the Parse Tree Begins Here\n++++++++++++++++++++++++++++++++++++++++++++++++\n");}//starter
-	{printf(“**Node %i: Reduced: name: (/*anything that involves actions and terminals*/)”, node);//node information}
-	{printf("****/*action name*/ -> /*simplest form of action name (e.g. IDENTIFIER a, parse tree node)*/ /*if not parse tree node then name of thing*/");//branch information}
-	{printf("****terminal symbol /*terminal name*/");}
+	{printf(“**Node %i: Reduced: name: (anything that involves actions and terminals)”, node);//node information}
+	{printf("****action name -> simplest form of action name (e.g. IDENTIFIER a, parse tree node) if not parse tree node then name of thing");//branch information}
+	{printf("****terminal symbol terminal name");}
 //get rid of this line last after double checking.
 */
 Program:
