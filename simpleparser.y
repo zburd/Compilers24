@@ -114,7 +114,12 @@ Define:
 //add in ability to have an identifier equal a function
 */
 SetEqualTo:
-    IDENTIFIER ASSIGN Expression;
+    IDENTIFIER ASSIGN Expression
+    | IDENTIFIER ASSIGN_PLUS Expression
+    | IDENTIFIER ASSIGN_MINUS Expression
+    | IDENTIFIER ASSIGN_MULTIPLY Expression
+    | IDENTIFIER ASSIGN_DIVIDE Expression
+    | IDENTIFIER ASSIGN_MOD Expression;
 Action:
     Keyed
     | UserMade;
