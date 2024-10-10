@@ -1,6 +1,8 @@
 %{
 #include<stdio.h>
 #include <stdlib.h>
+
+int yylex();
 %}
 
 %token K_DO
@@ -240,3 +242,7 @@ Factord:
     | MINUS Mathd;
 
 %%
+
+int main(){
+    yyparse();
+}
