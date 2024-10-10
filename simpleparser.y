@@ -129,6 +129,7 @@ Action:
 
 Variable:
     Type IDENTIFIER
+    | UserMade
     | Type IDENTIFIER COMMA Variable;
 Expression:
     String
