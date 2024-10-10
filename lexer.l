@@ -191,10 +191,6 @@ DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 
 %%   
 
-int main(){
-    printf("\n Enter string: ");
-    yylex();
-}
 
 int yywrap(){
     return 1;
