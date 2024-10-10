@@ -181,13 +181,17 @@ While:
 /* TODO
 //add in any math expresions i forgot
 */
+
+Plusminus:
+    PLUS
+    | MINUS;
 Mathi:
-    Mathi PLUS Termi
-    | Mathi PLUS Termi
+    Mathi Plusminus Termi
+    | Mathi Plusminus Termi
     | Termi;
 Mathd:
-    Mathd PLUS Termd
-    | Mathd PLUS Termd
+    Mathd Plusminus Termd
+    | Mathd Plusminus Termd
     | Termd;
 Equality:
     Equality DAND Statment
