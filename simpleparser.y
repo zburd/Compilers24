@@ -24,7 +24,14 @@ typedef TREE_NODE *BINARY_TREE;
 int evaluate(BINARY_TREE);
 BINARY_TREE create_node(int, int, BINARY_TREE, BINARY_TREE);
 void printTree(BINARY_TREE);
+
 %}
+
+%union {
+    int intValue;
+    BINARY_TREE tree;
+}
+
 
 %token K_DO
 %token K_DOUBLE
@@ -85,23 +92,35 @@ void printTree(BINARY_TREE);
 %token ICONSTANT
 %token DCONSTANT
 
+%type <tree> Program
+%type <tree> Function
+%type <tree> Type
+%type <tree> Inside
+%type <tree> SetEqualTo
+%type <tree> Print
+%type <tree> Item
 
 %start Program
 
 %%
 
 Program:
-    K_PROGRAM IDENTIFIER LCURLY Function RCURLY {BINARY_TREE parseTree; int result; $$ = create_node(-1, PROGRAM, $4, NULL); printTree(parseTree);};
+    K_PROGRAM IDENTIFIER LCURLY Function RCURLY {
+        $$ = create_node(-1, PROGRAM, $4, NULL); // Ensure $4 is valid
+        printTree($$);
+    }
+;
+
 
 Function:
     K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {$$ = create_node(-1, FUNCTION, $2, $7);};
 
 Type:
-    K_INTEGER {$$ = create_node($1, TYPE, NULL, NULL);}
-    | K_DOUBLE {$$ = create_node($1, TYPE, NULL, NULL);}
-    | K_STRING {$$ = create_node($1, TYPE, NULL, NULL);};
+    K_INTEGER {$$ = create_node(-1, TYPE, NULL, NULL);}
+    | K_DOUBLE {$$ = create_node(-1, TYPE, NULL, NULL);}
+    | K_STRING {$$ = create_node(-1, TYPE, NULL, NULL);};
 Inside:
-    | Type IDENTIFIER SEMI Inside {$$ = create_node(-1, INSIDE, $1, $4);}
+    Type IDENTIFIER SEMI Inside {$$ = create_node(-1, INSIDE, $1, $4);}
     | SetEqualTo SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);}
     | Print SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);};
 SetEqualTo:
@@ -119,10 +138,10 @@ Print:
     | K_PRINT_STRING LPAREN SCONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
     | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);};
 Item:
-    IDENTIFIER {$$ = create_node($1, ITEM, NULL, NULL);}
-    | ICONSTANT {$$ = create_node($1, ITEM, NULL, NULL);}
-    | SCONSTANT {$$ = create_node($1, ITEM, NULL, NULL);}
-    | DCONSTANT {$$ = create_node($1, ITEM, NULL, NULL);};
+    IDENTIFIER {$$ = create_node(-1, ITEM, NULL, NULL);}
+    | ICONSTANT {$$ = create_node(-1, ITEM, NULL, NULL);}
+    | SCONSTANT {$$ = create_node(-1, ITEM, NULL, NULL);}
+    | DCONSTANT {$$ = create_node(-1, ITEM, NULL, NULL);};
 
 
 %%
@@ -132,7 +151,7 @@ BINARY_TREE create_node(int item, int name, BINARY_TREE first, BINARY_TREE secon
     t -> item = item;
     t -> name = name;
     t -> first = first;
-    t -> second -> second;
+    t -> second = second;
     return (t);
 }
 int main(){
