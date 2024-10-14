@@ -1,8 +1,29 @@
 %{
 #include<stdio.h>
 #include <stdlib.h>
+#include <string.h>
+enum ParseTreeNodeTypes {PROGRAM, FUNCTION, TYPE, INSIDE, SETEQUALTO, PRINT, ITEM};
 
-int yylex();
+extern int yylex();
+extern int yyparse();
+extern FILE* yyin;
+void yyerror(const char *s) {
+   fprintf (stderr, "%s\n", s);
+}
+
+struct treeNode{
+    int item;
+    int name;
+    struct treeNode *first;
+    struct treeNode *second;
+};
+
+typedef struct treeNode TREE_NODE;
+typedef TREE_NODE *BINARY_TREE;
+
+int evaluate(BINARY_TREE);
+BINARY_TREE create_node(int, int, BINARY_TREE, BINARY_TREE);
+void printTree(BINARY_TREE);
 %}
 
 %token K_DO
@@ -44,6 +65,7 @@ int yylex();
 %token DIVIDE
 %token GT
 %token LBRACKET
+%token LEQ
 %token LCURLY
 %token LPAREN
 %token LT
@@ -58,192 +80,71 @@ int yylex();
 %token RPAREN
 %token SEMI
 
-%token IDENTIFIER 
+%token IDENTIFIER
 %token SCONSTANT
 %token ICONSTANT
 %token DCONSTANT
+
 
 %start Program
 
 %%
 
-/* TODO
-//add in components for tree representation later
-	{printf("++++++++++++++++++++++++++++++++++++++++++++++++\n+ Walking through the Parse Tree Begins Here\n++++++++++++++++++++++++++++++++++++++++++++++++\n");}//starter
-	{printf(“**Node %i: Reduced: name: (anything that involves actions and terminals)”, node);//node information}
-	{printf("****action name -> simplest form of action name (e.g. IDENTIFIER a, parse tree node) if not parse tree node then name of thing");//branch information}
-	{printf("****terminal symbol terminal name");}
-//get rid of this line last after double checking.
-*/
 Program:
-    K_PROGRAM IDENTIFIER RCURLY Outside LCURLY;
-
-Outside:
-    Function Outside
-    | Line SEMI Outside
-    | /* empty */;
-
+    K_PROGRAM IDENTIFIER LCURLY Function RCURLY {BINARY_TREE parseTree; int result; $$ = create_node(-1, PROGRAM, $4, NULL); printTree(parseTree);};
 
 Function:
-    Type IDENTIFIER LPAREN Variables RPAREN RCURLY Inside LCURLY;
-/* TODO
-//check if this is all a line can do
-//also it gets a semicolin when called above
-*/
-Line:
-    Define
-    | SetEqualTo
-    | Action;
+    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {$$ = create_node(-1, FUNCTION, $2, $7);};
 
-/* TODO
-//make types of the type instead of the tokens
-*/
 Type:
-    DCONSTANT
-    | ICONSTANT
-    | SCONSTANT;
-Variables:
-    Type IDENTIFIER
-    | Type IDENTIFIER COMMA Variable
-    | /* empty */;
+    K_INTEGER {$$ = create_node($1, TYPE, NULL, NULL);}
+    | K_DOUBLE {$$ = create_node($1, TYPE, NULL, NULL);}
+    | K_STRING {$$ = create_node($1, TYPE, NULL, NULL);};
 Inside:
-    Line SEMI
-    | Line SEMI Inside
-    | /* empty */;
-Define:
-    Type IDENTIFIER;
-/* TODO
-//add in ability to have an identifier equal a function
-*/
+    | Type IDENTIFIER SEMI Inside {$$ = create_node(-1, INSIDE, $1, $4);}
+    | SetEqualTo SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);}
+    | Print SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);};
 SetEqualTo:
-    IDENTIFIER ASSIGN Expression
-    | IDENTIFIER ASSIGN_PLUS Expression
-    | IDENTIFIER ASSIGN_MINUS Expression
-    | IDENTIFIER ASSIGN_MULTIPLY Expression
-    | IDENTIFIER ASSIGN_DIVIDE Expression
-    | IDENTIFIER ASSIGN_MOD Expression;
-Action:
-    Keyed
-    | UserMade;
-
-
-Variable:
-    Type IDENTIFIER
-    | UserMade
-    | Type IDENTIFIER COMMA Variable;
-Expression:
-    String
-    | Integer
-    | Double;
-/* TODO
-//Make sure all function keys are accounted for
-*/
-Keyed:
-    Print
-    | Read
-    | If
-    | Else
-    | Do
-    | While;
-UserMade:
-    IDENTIFIER LPAREN Variables RPAREN;
-
-
-String:
-    IDENTIFIER
-    | SCONSTANT;
-Integer:
-    Mathi;
-Double:
-    Mathd;
+    IDENTIFIER ASSIGN Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
+    | IDENTIFIER ASSIGN_DIVIDE Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
+    | IDENTIFIER ASSIGN_MINUS Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
+    | IDENTIFIER ASSIGN_MOD Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
+    | IDENTIFIER ASSIGN_MULTIPLY Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
+    | IDENTIFIER ASSIGN_PLUS Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);};
 Print:
-    K_PRINT_INTEGER LPAREN Integer RPAREN
-    | K_PRINT_DOUBLE LPAREN Double RPAREN
-    | K_PRINT_STRING LPAREN String RPAREN;
-Read:
-    K_READ_INTEGER LPAREN Integer RPAREN
-    | K_READ_DOUBLE LPAREN Double RPAREN
-    | K_READ_STRING LPAREN String RPAREN;
-If:
-    K_IF LPAREN Equality RPAREN LCURLY Inside RCURLY;
-Else:
-    K_ELSE K_IF LPAREN Equality RPAREN LCURLY Inside RCURLY
-    | K_ELSE LCURLY Inside RCURLY;
-/* TODO
-//fix so that it can be a good for statment
-*/
-Do:
-    K_DO K_UNTIL LPAREN Equality RPAREN LCURLY Inside RCURLY;
-/* TODO
-//double check to see if the while statment is correct
-*/
-While:
-    K_DO K_WHILE LPAREN Equality RPAREN LCURLY Inside RCURLY;
+    K_PRINT_INTEGER LPAREN IDENTIFIER RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
+    | K_PRINT_STRING LPAREN IDENTIFIER RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
+    | K_PRINT_DOUBLE LPAREN IDENTIFIER RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
+    | K_PRINT_INTEGER LPAREN ICONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
+    | K_PRINT_STRING LPAREN SCONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
+    | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);};
+Item:
+    IDENTIFIER {$$ = create_node($1, ITEM, NULL, NULL);}
+    | ICONSTANT {$$ = create_node($1, ITEM, NULL, NULL);}
+    | SCONSTANT {$$ = create_node($1, ITEM, NULL, NULL);}
+    | DCONSTANT {$$ = create_node($1, ITEM, NULL, NULL);};
 
-/* TODO
-//add in any math expresions i forgot
-*/
-
-Plusminus:
-    PLUS
-    | MINUS;
-Mathi:
-    Mathi Plusminus Termi
-    | Mathi Plusminus Termi
-    | Termi;
-Mathd:
-    Mathd Plusminus Termd
-    | Mathd Plusminus Termd
-    | Termd;
-Equality:
-    Equality DAND Statment
-    | Equality DOR Statment
-    | Statment;
-
-
-Termi:
-    Termi MULTIPLY Factori
-    | Termi DIVIDE Factori
-    | Factori;
-Termd:
-    Termd MULTIPLY Factord
-    | Termd DIVIDE Factord
-    | Factord;
-/* TODO
-//double check statments to make sure everything is set up properly
-*/
-Statment:
-    Integer DEQ Integer
-    | Double DEQ Double
-    | String DEQ String
-    | Integer GEQ Integer
-    | Double GEQ Double
-    | Integer GT Integer
-    | Double GT Double
-    | Integer LEQ Integer
-    | Double LEQ Double
-    | Integer LT Integer
-    | Double LT Double
-    | Integer NE Integer
-    | Double NE Double
-    | NOT LPAREN Equality RPAREN
-    | 'True'
-    | 'False';
-
-
-Factori:
-    IDENTIFIER
-    | K_INTEGER
-    | LPAREN Mathi RPAREN
-    | MINUS Mathi;
-Factord:
-    IDENTIFIER
-    | K_DOUBLE
-    | LPAREN Mathd RPAREN
-    | MINUS Mathd;
 
 %%
-
+BINARY_TREE create_node(int item, int name, BINARY_TREE first, BINARY_TREE second){
+    BINARY_TREE t;
+    t = (BINARY_TREE)malloc(sizeof(TREE_NODE));
+    t -> item = item;
+    t -> name = name;
+    t -> first = first;
+    t -> second -> second;
+    return (t);
+}
 int main(){
+    printf("before\n");
     yyparse();
+    printf("after\n");
+    return 0;
+}
+void printTree(BINARY_TREE t){
+    if(t == NULL){return;}
+    printf("item: %d", t -> item);
+    printf("nodeIdentifier: %d\n", t -> name);
+    printTree(t -> first);
+    printTree(t -> second);
 }

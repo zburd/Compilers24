@@ -1,71 +1,12 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "y.tab.h"
-
-#define K_DO               1
-#define K_DOUBLE           2
-#define K_ELSE             3
-#define K_EXIT             4
-#define K_FUNCTION         5
-#define K_IF               6
-#define K_INTEGER          7
-#define K_PRINT_DOUBLE     8
-#define K_PRINT_INTEGER    9
-#define K_PRINT_STRING     10
-#define K_PROCEDURE        11
-#define K_PROGRAM          12
-#define K_READ_DOUBLE      13
-#define K_READ_INTEGER     14
-#define K_READ_STRING      15
-#define K_RETURN           16
-#define K_STRING           17
-#define K_THEN             18
-#define K_UNTIL            19
-#define K_WHILE            20
-#define ASSIGN             21
-#define ASSIGN_PLUS        22
-#define ASSIGN_MINUS       23
-#define ASSIGN_MULTIPLY    24
-#define ASSIGN_DIVIDE      25
-#define ASSIGN_MOD         26
-#define COMMENT            27
-#define DAND               28
-#define DOR                29
-#define DEQ                30
-#define GEQ                31
-#define LEQ                32
-#define DECREMENT          33
-#define NE                 34
-#define INCREMENT          35
-#define COMMA              36
-#define DIVIDE             37
-#define GT                 38
-#define LBRACKET           39
-#define LCURLY             40
-#define LPAREN             41
-#define LT                 42
-#define MINUS              43
-#define MOD                44
-#define MULTIPLY           45
-#define NOT                46
-#define PERIOD             47
-#define PLUS               48
-#define RBRACKET           49
-#define RCURLY             50
-#define RPAREN             51
-#define SEMI               52
-
-#define IDENTIFIER 53
-#define SCONSTANT 54
-#define ICONSTANT 55
-#define DCONSTANT 56
+#include "test.tab.h"
 
 
 
 
 %}
-
 K_DO               "do"
 K_DOUBLE           "double"
 K_ELSE             "else"
@@ -187,6 +128,7 @@ DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 {SCONSTANT} { return SCONSTANT; }
 {ICONSTANT} { return ICONSTANT; }
 {DCONSTANT} { return DCONSTANT; }
+[ \t];
 
 
 %%   
