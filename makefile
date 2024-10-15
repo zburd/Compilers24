@@ -3,7 +3,7 @@
 all: flex lex.yy.c a.out
 
 flex:
-	@bison simpleparser.y
+	@bison -d simpleparser.y
 	@flex lexer.l
 
 lex.yy.c:
@@ -14,4 +14,6 @@ a.out:
 
 clean:
 	@rm lex.yy.c
-	@rm a.out
+	@rm simpleparser.tab.c
+	@rm ./simpleparser
+	@rm simpleparser.tb.h
