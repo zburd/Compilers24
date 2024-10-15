@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "test.tab.h"
+#include "simpleparser.tab.h"
 
 
 
