@@ -122,7 +122,8 @@ Type:
 Inside:
     Type IDENTIFIER SEMI Inside {$$ = create_node(-1, INSIDE, $1, $4);}
     | SetEqualTo SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);}
-    | Print SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);};
+    | Print SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);}
+    | /* empty */ {$$ = NULL;};
 SetEqualTo:
     IDENTIFIER ASSIGN Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
     | IDENTIFIER ASSIGN_DIVIDE Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
