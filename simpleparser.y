@@ -11,25 +11,12 @@ void yyerror(const char *s) {
    fprintf (stderr, "%s\n", s);
 }
 
-struct treeNode{
-    int item;
-    int name;
-    struct treeNode *first;
-    struct treeNode *second;
-};
-
-typedef struct treeNode TREE_NODE;
-typedef TREE_NODE *BINARY_TREE;
-
-int evaluate(BINARY_TREE);
-BINARY_TREE create_node(int, int, BINARY_TREE, BINARY_TREE);
-void printTree(BINARY_TREE);
 
 %}
 
 %union {
     int intValue;
-    BINARY_TREE tree;
+    treeNode tree;
 }
 
 
@@ -106,65 +93,49 @@ void printTree(BINARY_TREE);
 
 Program:
     K_PROGRAM IDENTIFIER LCURLY Function RCURLY {
-        $$ = create_node(-1, PROGRAM, $4, NULL); // Ensure $4 is valid
-        printTree($$);
+        printf("Parsed ______\n"); // Ensure $4 is valid
     }
 ;
 
 
 Function:
-    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {$$ = create_node(-1, FUNCTION, $2, $7);};
+    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {printf("Parsed ______\n");};
 
 Type:
-    K_INTEGER {$$ = create_node(-1, TYPE, NULL, NULL);}
-    | K_DOUBLE {$$ = create_node(-1, TYPE, NULL, NULL);}
-    | K_STRING {$$ = create_node(-1, TYPE, NULL, NULL);};
+    K_INTEGER {printf("Parsed ______\n");}
+    | K_DOUBLE {printf("Parsed ______\n");}
+    | K_STRING {printf("Parsed ______\n");};
 Inside:
-    Type IDENTIFIER SEMI Inside {$$ = create_node(-1, INSIDE, $1, $4);}
-    | SetEqualTo SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);}
-    | Print SEMI Inside {$$ = create_node(-1, INSIDE, $1, $3);}
+    Type IDENTIFIER SEMI Inside {printf("Parsed ______\n");}
+    | SetEqualTo SEMI Inside {printf("Parsed ______\n");}
+    | Print SEMI Inside {printf("Parsed ______\n");}
     | /* empty */ {$$ = NULL;};
 SetEqualTo:
-    IDENTIFIER ASSIGN Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
-    | IDENTIFIER ASSIGN_DIVIDE Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
-    | IDENTIFIER ASSIGN_MINUS Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
-    | IDENTIFIER ASSIGN_MOD Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
-    | IDENTIFIER ASSIGN_MULTIPLY Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);}
-    | IDENTIFIER ASSIGN_PLUS Item {$$ = create_node(-1, SETEQUALTO, $3, NULL);};
+    IDENTIFIER ASSIGN Item {printf("Parsed ______\n");}
+    | IDENTIFIER ASSIGN_DIVIDE Item {printf("Parsed ______\n");}
+    | IDENTIFIER ASSIGN_MINUS Item {printf("Parsed ______\n");}
+    | IDENTIFIER ASSIGN_MOD Item {printf("Parsed ______\n");}
+    | IDENTIFIER ASSIGN_MULTIPLY Item {printf("Parsed ______\n");}
+    | IDENTIFIER ASSIGN_PLUS Item {printf("Parsed ______\n");};
 Print:
-    K_PRINT_INTEGER LPAREN IDENTIFIER RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
-    | K_PRINT_STRING LPAREN IDENTIFIER RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
-    | K_PRINT_DOUBLE LPAREN IDENTIFIER RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
-    | K_PRINT_INTEGER LPAREN ICONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
-    | K_PRINT_STRING LPAREN SCONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);}
-    | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {$$ = create_node(-1, PRINT, NULL, NULL);};
+    K_PRINT_INTEGER LPAREN IDENTIFIER RPAREN {printf("Parsed ______\n");}
+    | K_PRINT_STRING LPAREN IDENTIFIER RPAREN {printf("Parsed ______\n");}
+    | K_PRINT_DOUBLE LPAREN IDENTIFIER RPAREN {printf("Parsed ______\n");}
+    | K_PRINT_INTEGER LPAREN ICONSTANT RPAREN {printf("Parsed ______\n");}
+    | K_PRINT_STRING LPAREN SCONSTANT RPAREN {printf("Parsed ______\n");}
+    | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {printf("Parsed ______\n");};
 Item:
-    IDENTIFIER {$$ = create_node(-1, ITEM, NULL, NULL);}
-    | ICONSTANT {$$ = create_node(-1, ITEM, NULL, NULL);}
-    | SCONSTANT {$$ = create_node(-1, ITEM, NULL, NULL);}
-    | DCONSTANT {$$ = create_node(-1, ITEM, NULL, NULL);};
+    IDENTIFIER {printf("Parsed ______\n");}
+    | ICONSTANT {printf("Parsed ______\n");}
+    | SCONSTANT {printf("Parsed ______\n");}
+    | DCONSTANT {printf("Parsed ______\n");};
 
 
 %%
-BINARY_TREE create_node(int item, int name, BINARY_TREE first, BINARY_TREE second){
-    BINARY_TREE t;
-    t = (BINARY_TREE)malloc(sizeof(TREE_NODE));
-    t -> item = item;
-    t -> name = name;
-    t -> first = first;
-    t -> second = second;
-    return (t);
-}
 int main(){
     printf("before\n");
     yyparse();
     printf("after\n");
     return 0;
 }
-void printTree(BINARY_TREE t){
-    if(t == NULL){return;}
-    printf("item: %d", t -> item);
-    printf("nodeIdentifier: %d\n", t -> name);
-    printTree(t -> first);
-    printTree(t -> second);
 }
