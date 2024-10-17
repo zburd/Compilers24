@@ -99,7 +99,7 @@ Inside:
     Type IDENTIFIER SEMI Inside {printf("Parsed ______\n");}
     | SetEqualTo SEMI Inside {printf("Parsed ______\n");}
     | Print SEMI Inside {printf("Parsed ______\n");}
-    | /* empty */ {printf("Parsed Inside (Empty)"};
+    | /* empty */ {printf("Parsed Inside (Empty)");};
 SetEqualTo:
     IDENTIFIER ASSIGN Item {printf("Parsed ______\n");}
     | IDENTIFIER ASSIGN_DIVIDE Item {printf("Parsed ______\n");}
