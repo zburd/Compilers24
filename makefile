@@ -16,4 +16,4 @@ clean:
 	@rm lex.yy.c
 	@rm simpleparser.tab.c
 	@rm ./simpleparser
-	@rm simpleparser.tb.h
+	@rm simpleparser.tab.h
