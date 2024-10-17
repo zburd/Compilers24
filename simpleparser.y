@@ -16,7 +16,6 @@ void yyerror(const char *s) {
 
 %union {
     int intValue;
-    treeNode tree;
 }
 
 
@@ -78,15 +77,6 @@ void yyerror(const char *s) {
 %token SCONSTANT
 %token ICONSTANT
 %token DCONSTANT
-
-%type <tree> Program
-%type <tree> Function
-%type <tree> Type
-%type <tree> Inside
-%type <tree> SetEqualTo
-%type <tree> Print
-%type <tree> Item
-
 %start Program
 
 %%
@@ -109,7 +99,7 @@ Inside:
     Type IDENTIFIER SEMI Inside {printf("Parsed ______\n");}
     | SetEqualTo SEMI Inside {printf("Parsed ______\n");}
     | Print SEMI Inside {printf("Parsed ______\n");}
-    | /* empty */ {$$ = NULL;};
+    | /* empty */ {printf("Parsed Inside (Empty)"};
 SetEqualTo:
     IDENTIFIER ASSIGN Item {printf("Parsed ______\n");}
     | IDENTIFIER ASSIGN_DIVIDE Item {printf("Parsed ______\n");}
@@ -137,5 +127,4 @@ int main(){
     yyparse();
     printf("after\n");
     return 0;
-}
 }
