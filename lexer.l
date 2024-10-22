@@ -62,13 +62,14 @@ RCURLY             "}"
 RPAREN             ")"
 SEMI               ";"
 
-WHITESPACE [ |\t]*
+WHITESPACE [ \t\n]+
 
 IDENTIFIER [a-zA-Z$_][a-zA-Z0-9$_]{0,31}
 SCONSTANT "\""([^"\\]|\\.)*"\""
 ICONSTANT [0-9]+
 DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 %%
+
 {K_DO} { return K_DO; }
 {K_DOUBLE} { return K_DOUBLE; }
 {K_ELSE} { return K_ELSE; }
@@ -128,8 +129,8 @@ DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 {SCONSTANT} { return SCONSTANT; }
 {ICONSTANT} { return ICONSTANT; }
 {DCONSTANT} { return DCONSTANT; }
-[ \t];
 
+{WHITESPACE} { /*Do Nothing*/ }
 
 %%   
 

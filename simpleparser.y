@@ -83,48 +83,46 @@ void yyerror(const char *s) {
 
 Program:
     K_PROGRAM IDENTIFIER LCURLY Function RCURLY {
-        printf("Parsed Program\n"); // Ensure $4 is valid
+        printf("Program\n");
     }
 ;
 
 
 Function:
-    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {printf("Parsed Function\n");};
+    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {printf("Function\n");};
 
 Type:
-    K_INTEGER {printf("Parsed K_INTEGER\n");}
-    | K_DOUBLE {printf("Parsed K_DOUBLE\n");}
-    | K_STRING {printf("Parsed K_STRING\n");};
+    K_INTEGER {printf("K_INTEGER\n");}
+    | K_DOUBLE {printf("K_DOUBLE\n");}
+    | K_STRING {printf("K_STRING\n");};
 Inside:
-    Type IDENTIFIER SEMI Inside {printf("Parsed Inside (Declare)\n");}
-    | SetEqualTo SEMI Inside {printf("Parsed Inside (Assign)\n");}
-    | Print SEMI Inside {printf("Parsed Inside (Print)\n");}
-    | /* empty */ {printf("Parsed Inside (Empty)\n");};
+    Type IDENTIFIER SEMI Inside {printf("Inside_Declare\n");}
+    | SetEqualTo SEMI Inside {printf("Inside_Assign\n");}
+    | Print SEMI Inside {printf("Inside_Print\n");}
+    | /* empty */ {printf("Inside_Empty\n");};
 SetEqualTo:
-    IDENTIFIER ASSIGN Item {printf("Parsed SetEqualTo\n");}
-    | IDENTIFIER ASSIGN_DIVIDE Item {printf("Parsed SetEqualTo\n");}
-    | IDENTIFIER ASSIGN_MINUS Item {printf("Parsed SetEqualTo\n");}
-    | IDENTIFIER ASSIGN_MOD Item {printf("Parsed SetEqualTo\n");}
-    | IDENTIFIER ASSIGN_MULTIPLY Item {printf("Parsed SetEqualTo\n");}
-    | IDENTIFIER ASSIGN_PLUS Item {printf("Parsed SetEqualTo\n");};
+    IDENTIFIER ASSIGN Item {printf("Assign\n");}
+    | IDENTIFIER ASSIGN_DIVIDE Item {printf("Assign_Divide\n");}
+    | IDENTIFIER ASSIGN_MINUS Item {printf("Assign_Minus\n");}
+    | IDENTIFIER ASSIGN_MOD Item {printf("Assign_Mod\n");}
+    | IDENTIFIER ASSIGN_MULTIPLY Item {printf("Assign_Multiply\n");}
+    | IDENTIFIER ASSIGN_PLUS Item {printf("Assign_Plus\n");};
 Print:
-    K_PRINT_INTEGER LPAREN IDENTIFIER RPAREN {printf("Parsed Print I\n");}
-    | K_PRINT_STRING LPAREN IDENTIFIER RPAREN {printf("Parsed Print S\n");}
-    | K_PRINT_DOUBLE LPAREN IDENTIFIER RPAREN {printf("Parsed Print D\n");}
-    | K_PRINT_INTEGER LPAREN ICONSTANT RPAREN {printf("Parsed Print I\n");}
-    | K_PRINT_STRING LPAREN SCONSTANT RPAREN {printf("Parsed Print S\n");}
-    | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {printf("Parsed Print D\n");};
+    K_PRINT_INTEGER LPAREN IDENTIFIER RPAREN {printf("PrintI\n");}
+    | K_PRINT_STRING LPAREN IDENTIFIER RPAREN {printf("PrintS\n");}
+    | K_PRINT_DOUBLE LPAREN IDENTIFIER RPAREN {printf("PrintD\n");}
+    | K_PRINT_INTEGER LPAREN ICONSTANT RPAREN {printf("PrintI\n");}
+    | K_PRINT_STRING LPAREN SCONSTANT RPAREN {printf("PrintS\n");}
+    | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {printf("PrintD\n");};
 Item:
-    IDENTIFIER {printf("Parsed identifier\n");}
-    | ICONSTANT {printf("Parsed int constant\n");}
-    | SCONSTANT {printf("Parsed string constant\n");}
-    | DCONSTANT {printf("Parsed double constant\n");};
+    IDENTIFIER {printf("Identifier\n");}
+    | ICONSTANT {printf("Iconstant\n");}
+    | SCONSTANT {printf("Sconstant\n");}
+    | DCONSTANT {printf("Dconstant\n");};
 
 
 %%
 int main(){
-    printf("before\n");
     yyparse();
-    printf("after\n");
     return 0;
 }

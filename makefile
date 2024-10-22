@@ -10,7 +10,7 @@ lex.yy.c:
 	@gcc simpleparser.tab.c lex.yy.c -o simpleparser -lm
 
 a.out:
-	@./simpleparser < tiny_example_2.f24
+	@./simpleparser < tiny_example_1.f24 > parserout.txt
 
 clean:
 	@rm lex.yy.c
