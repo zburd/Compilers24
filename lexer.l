@@ -125,10 +125,10 @@ DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 {RPAREN} { return RPAREN; }
 {SEMI} { return SEMI; }
 
-{IDENTIFIER} { return IDENTIFIER; }
-{SCONSTANT} { return SCONSTANT; }
-{ICONSTANT} { return ICONSTANT; }
-{DCONSTANT} { return DCONSTANT; }
+{IDENTIFIER} {yylval.strValue = strdup(yytext);  return IDENTIFIER; }
+{SCONSTANT} {yylval.strValue = strdup(yytext);  return SCONSTANT; }
+{ICONSTANT} {yylval.strValue = strdup(yytext); return ICONSTANT; }
+{DCONSTANT} {yylval.strValue = strdup(yytext);  return DCONSTANT; }
 
 {WHITESPACE} { /*Do Nothing*/ }
 
