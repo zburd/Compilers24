@@ -133,8 +133,13 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 
 	// Reads in the file, pushes each line as a node on the stack
 	while (std::getline(file, line)) {
+
 		// make a new node for the data in the line
-		ParseTreeNode* newNode = new ParseTreeNode(line);
+		ParseTreeNode* newNode = nullptr;
+		int pos = line.find(" ");
+		if (pos == -1) {newNode = new ParseTreeNode(line);}
+		else { newNode = new ParseTreeNode(line.substr(0,pos),line.substr(pos+1)); }
+			
 
 		while (!nodeStack.empty()){
 			if (isParent(newNode, nodeStack.top())){

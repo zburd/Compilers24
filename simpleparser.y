@@ -8,16 +8,17 @@ extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
 void yyerror(const char *s) {
-   fprintf (stderr, "%s\n", s);
+   fprintf (stderr, "%s", s);
 }
-
 
 %}
 
 %union {
     int intValue;
+    char* strValue;
 }
 
+%type <strValue> Program Function Type Inside SetEqualTo Print Item IDENTIFIER ICONSTANT SCONSTANT DCONSTANT
 
 %token K_DO
 %token K_DOUBLE
@@ -50,6 +51,7 @@ void yyerror(const char *s) {
 %token DOR
 %token DEQ
 %token GEQ
+%token LEQ
 %token LE
 %token DECREMENT
 %token NE
@@ -58,7 +60,6 @@ void yyerror(const char *s) {
 %token DIVIDE
 %token GT
 %token LBRACKET
-%token LEQ
 %token LCURLY
 %token LPAREN
 %token LT
@@ -72,56 +73,103 @@ void yyerror(const char *s) {
 %token RCURLY
 %token RPAREN
 %token SEMI
-
 %token IDENTIFIER
 %token SCONSTANT
 %token ICONSTANT
 %token DCONSTANT
+
 %start Program
 
 %%
+// Grammar rules with correct types usage
 
 Program:
     K_PROGRAM IDENTIFIER LCURLY Function RCURLY {
-        printf("Program\n");
+        printf("Program %s\n", $2); // $2 is the IDENTIFIER
     }
 ;
 
-
 Function:
-    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {printf("Function\n");};
+    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {
+        printf("Function %s\n", $3); // $3 is the IDENTIFIER
+    };
 
 Type:
-    K_INTEGER {printf("K_INTEGER\n");}
-    | K_DOUBLE {printf("K_DOUBLE\n");}
-    | K_STRING {printf("K_STRING\n");};
-Inside:
-    Type IDENTIFIER SEMI Inside {printf("Inside_Declare\n");}
-    | SetEqualTo SEMI Inside {printf("Inside_Assign\n");}
-    | Print SEMI Inside {printf("Inside_Print\n");}
-    | /* empty */ {printf("Inside_Empty\n");};
-SetEqualTo:
-    IDENTIFIER ASSIGN Item {printf("Assign\n");}
-    | IDENTIFIER ASSIGN_DIVIDE Item {printf("Assign_Divide\n");}
-    | IDENTIFIER ASSIGN_MINUS Item {printf("Assign_Minus\n");}
-    | IDENTIFIER ASSIGN_MOD Item {printf("Assign_Mod\n");}
-    | IDENTIFIER ASSIGN_MULTIPLY Item {printf("Assign_Multiply\n");}
-    | IDENTIFIER ASSIGN_PLUS Item {printf("Assign_Plus\n");};
-Print:
-    K_PRINT_INTEGER LPAREN IDENTIFIER RPAREN {printf("PrintI\n");}
-    | K_PRINT_STRING LPAREN IDENTIFIER RPAREN {printf("PrintS\n");}
-    | K_PRINT_DOUBLE LPAREN IDENTIFIER RPAREN {printf("PrintD\n");}
-    | K_PRINT_INTEGER LPAREN ICONSTANT RPAREN {printf("PrintI\n");}
-    | K_PRINT_STRING LPAREN SCONSTANT RPAREN {printf("PrintS\n");}
-    | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {printf("PrintD\n");};
-Item:
-    IDENTIFIER {printf("Identifier\n");}
-    | ICONSTANT {printf("Iconstant\n");}
-    | SCONSTANT {printf("Sconstant\n");}
-    | DCONSTANT {printf("Dconstant\n");};
+    K_INTEGER { printf("K_INTEGER\n"); }
+    | K_DOUBLE { printf("K_DOUBLE\n"); }
+    | K_STRING { printf("K_STRING\n"); };
 
+Inside:
+    Type IDENTIFIER SEMI Inside {
+        printf("Inside_Declare %s\n", $2); // $2 is the IDENTIFIER
+    }
+    | SetEqualTo SEMI Inside {
+        printf("Inside_Assign %s\n", $1); // This has to be updated based on actual items
+    }
+    | Print SEMI Inside {
+        printf("Inside_Print\n"); // Print has no applicable items
+    }
+    | /* empty */ {
+        printf("Inside_Empty\n"); // No valid $1 reference here
+    };
+
+SetEqualTo:
+    IDENTIFIER ASSIGN Item {
+        printf("Assign %s\n", $1); // $1 is the IDENTIFIER
+    }
+    | IDENTIFIER ASSIGN_DIVIDE Item {
+        printf("Assign_Divide %s\n", $1);
+    }
+    | IDENTIFIER ASSIGN_MINUS Item {
+        printf("Assign_Minus %s\n", $1);
+    }
+    | IDENTIFIER ASSIGN_MOD Item {
+        printf("Assign_Mod %s\n", $1);
+    }
+    | IDENTIFIER ASSIGN_MULTIPLY Item {
+        printf("Assign_Multiply %s\n", $1);
+    }
+    | IDENTIFIER ASSIGN_PLUS Item {
+        printf("Assign_Plus %s\n", $1);
+    };
+
+Print:
+    K_PRINT_INTEGER LPAREN IDENTIFIER RPAREN {
+        printf("PrintI %s\n", $3); // $3 is the IDENTIFIER
+    }
+    | K_PRINT_STRING LPAREN IDENTIFIER RPAREN {
+        printf("PrintS %s\n", $3);
+    }
+    | K_PRINT_DOUBLE LPAREN IDENTIFIER RPAREN {
+        printf("PrintD %s\n", $3);
+    }
+    | K_PRINT_INTEGER LPAREN ICONSTANT RPAREN {
+        printf("PrintI %s\n", $3); // $3 is ICONSTANT
+    }
+    | K_PRINT_STRING LPAREN SCONSTANT RPAREN {
+        printf("PrintS %s\n", $3); // $3 is SCONSTANT
+    }
+    | K_PRINT_DOUBLE LPAREN DCONSTANT RPAREN {
+        printf("PrintD %s\n", $3); // $3 is DCONSTANT
+    };
+
+Item:
+    IDENTIFIER {
+        printf("Identifier %s\n", $1); // $1 is the IDENTIFIER
+    }
+    | ICONSTANT {
+        printf("Iconstant %s\n", $1); // $1 is ICONSTANT
+    }
+    | SCONSTANT {
+        printf("Sconstant %s\n", $1); // $1 is SCONSTANT
+    }
+    | DCONSTANT {
+        printf("Dconstant %s\n", $1); // $1 is DCONSTANT
+    };
 
 %%
+// Main function
+
 int main(){
     yyparse();
     return 0;
