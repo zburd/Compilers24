@@ -25,6 +25,10 @@ class ParseTreeNode {
 		// Constructor and destructor. 
 		ParseTreeNode (string name, string data = "")
 			: name(name), data(data), parent(nullptr) {
+				if (name == "Iconstant") { dtype=0;}
+				else if (name == "Dconstant") { dtype=1;}
+				else if (name == "Sconstant") { dtype=2;}
+				else {dtype = -1;}
 		}
 
 		~ParseTreeNode () {
@@ -186,7 +190,8 @@ void printParseTree(ParseTreeNode* tree, int depth = 0) {
     // Print the current node with indentation based on depth
     std::cout << string(depth * 4, ' ') // Indentation (4 spaces per depth level)
          << "Node: " << tree->name 
-         << ", Data: " << tree->data << std::endl;
+         << ", Data: " << tree->data 
+	 << ", dtype: " << tree->dtype << std::endl;
 
     // Recursively print each child node
     for (ParseTreeNode* child : tree->children) {
