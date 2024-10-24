@@ -45,7 +45,7 @@ class ParseTreeNode {
 		}
 		string returnvarType()
 		{
-		    if (this.isVariable() == false) return "Not a variable.";
+		    if (this->isVariable() == false) return "Not a variable.";
 		    else if (dtype == 0) return "Integer.";
 		    else if (dtype == 1) return "Double";
 		    else if (dtype == 2) return "String.";
