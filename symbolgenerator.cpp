@@ -45,7 +45,7 @@ class ParseTreeNode {
 		}
 		bool isVariable()
 		{
-		    if (dtype == -1) return false;
+		    if (dtype == -1 || dtype > 2) return false;
 		    else return true;
 		}
 		string returnvarType()
@@ -54,7 +54,7 @@ class ParseTreeNode {
 		    else if (dtype == 0) return "Integer.";
 		    else if (dtype == 1) return "Double";
 		    else if (dtype == 2) return "String.";
-		    
+		    else if (dtype == 3) return "Function.";
 		}
 
 };
