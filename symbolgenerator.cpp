@@ -17,8 +17,8 @@ class ParseTreeNode {
 
 		string name;
 		
-        int dtype; //this is for data types for variables only! 
-        //0 = int, 1 = double, 2 = string, set to -1 if this is some other thing
+        int dtype; //this is for data types for variables/functions only! 
+        //0 = int, 1 = double, 2 = string, 3 = function, set to -1 if this is some other thing
         
 		string data; //Data is stored as string, can be converted later
 
@@ -28,6 +28,7 @@ class ParseTreeNode {
 				if (name == "Iconstant") { dtype=0;}
 				else if (name == "Dconstant") { dtype=1;}
 				else if (name == "Sconstant") { dtype=2;}
+				else if (name == "Function") {dtype=3;}
 				else {dtype = -1;}
 		}
 
