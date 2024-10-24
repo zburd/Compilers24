@@ -16,7 +16,10 @@ class ParseTreeNode {
 		vector<ParseTreeNode*> children;
 
 		string name;
-
+		
+        int dtype; //this is for data types for variables only! 
+        //0 = int, 1 = double, 2 = string, set to -1 if this is some other thing
+        
 		string data; //Data is stored as string, can be converted later
 
 		// Constructor and destructor. 
@@ -34,6 +37,11 @@ class ParseTreeNode {
 				child -> parent = this;
 				children.insert(children.begin(), child);
 			}
+		}
+		bool isVariable()
+		{
+		    if (dtype == -1) return false;
+		    else return true;
 		}
 
 };
