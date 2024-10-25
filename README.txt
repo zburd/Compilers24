@@ -6,8 +6,9 @@ To compile and use lexer individually:
 
 bison -d simpleparser.y
 flex lexer.l
-gcc simpleparser.tab.c lex.yy.c -o simpleparser -lm
-./simpleparser < <insert file to parse here>
+gcc parser.tab.c lex.yy.c -o parser -lm
+./parser < <insert file to parse here> > parserout.txt
+g++ symbolgenerator.cpp
 
 or run the makefile by running:
 
