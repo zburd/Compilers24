@@ -9,6 +9,7 @@ using std::vector;
 using std::string;
 using std::stack;
 using std::ifstream;
+using std::cout;
 
 class ParseTreeNode {
 	public:
@@ -66,7 +67,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	string pname = parent -> name;
 	string cname = child -> name;
 
-	if ( pname == "Program" ) { return cname == "Function"; }
+	if ( pname == "Program" && parent->children.size() == 0) { return cname == "Function"; }
 	else if ( pname == "Function" ) { 
 		switch (parent -> children.size()){
 			case 0: 
@@ -189,7 +190,7 @@ void printParseTree(ParseTreeNode* tree, int depth = 0) {
     }
 
     // Print the current node with indentation based on depth
-    std::cout << string(depth * 4, ' ') // Indentation (4 spaces per depth level)
+    cout << string(depth * 4, ' ') // Indentation (4 spaces per depth level)
          << "Node: " << tree->name 
          << ", Data: " << tree->data 
 	 << ", dtype: " << tree->dtype << std::endl;
@@ -198,6 +199,21 @@ void printParseTree(ParseTreeNode* tree, int depth = 0) {
     for (ParseTreeNode* child : tree->children) {
         printParseTree(child, depth + 1);
     }
+}
+
+void generateCode (ParseTreeNode* tree){
+	// Pre-declare the funky string function so we don't have to suffer?
+	
+	// Symbol tables and variable management is handled in helper functions
+	
+	if (tree->name == "Program"){
+		// Start walking through the program and declaring functions
+		//declareFunction (tree -> children[0]);
+	}
+	else { cout << "Tree is not a program!!!!!\n"; }
+
+	cout << "//Done\n";
+	// 
 }
 
 int main(){
