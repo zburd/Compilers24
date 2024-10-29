@@ -201,19 +201,48 @@ void printParseTree(ParseTreeNode* tree, int depth = 0) {
     }
 }
 
-void generateCode (ParseTreeNode* tree){
+void declareFunction (ParseTreeNode* ftree){
+	// Walks through the tree and find all declarations in scope, starting at function
+
+	if (ftree->name != "Function") {
+		cout << "Tree is not a function!!!!!\n";
+		return;
+	}
+
+	ParseTreeNode* walknode = ftree;
+	int stacksize = 0; // size of space function takes in stack
+
+	// TODO: Add code to get the return pointer from where the function was called
+
+	while (walknode->children[1]->name != "Inside_Empty"){
+		walknode = walknode->children[1];
+		if (walknode->name == "Inside_Declare") {
+			//TODO: Put the variables on the stack here
+			//Make sure to change stacksize so it properly exits scope when done
+		}
+	}
+
+	// At this point, all variables within the function's scope are declared. 
+	
+	//TODO: Generate code for the other things the function does here.
+
+	//TODO: Generate code to properly decrement the stack here.
+	//TODO: Generate a goto statement to go back to where the function was called.
+	cout << "\n//Done inside function\n";
+}
+
+void generateCode (ParseTreeNode* ptree){
 	// Pre-declare the funky string function so we don't have to suffer?
 	
 	// Symbol tables and variable management is handled in helper functions
 	
-	if (tree->name == "Program"){
+	if (ptree->name == "Program"){
 		// Start walking through the program and declaring functions
-		//declareFunction (tree -> children[0]);
+		declareFunction (ptree -> children[0]);
 	}
 	else { cout << "Tree is not a program!!!!!\n"; }
 
-	cout << "//Done\n";
-	// 
+	cout << "\n//Done inside program\n";
 }
 
 int main(){
