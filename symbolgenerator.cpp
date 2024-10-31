@@ -76,7 +76,11 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 				if (cname.length() > 7) {
 					return cname.substr(0,7) == "Inside_";
 				}else { return false; }
-			case 2: 
+			case 2:
+				if (cname.length() > 7) {
+					return cname.substr(0,10) == "Parameters";
+				}else { return false; }
+			case 3: 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
 						cname == "K_STRING");
@@ -216,14 +220,16 @@ void declareFunction (ParseTreeNode* ftree){
 
 	// TODO: Add code to get the return pointer from where the function was called
 
-	while (walknode->children[2]->name != "Inside_Empty"){
-		walknode = walknode->children[1];
+	while (walknode->children[3]->name != "Inside_Empty"){
+		walknode = walknode->children[2];
 		if (walknode->name == "Inside_Declare") {
 			//TODO: Put the variables on the stack here
 			//Make sure to change stacksize so it properly exits scope when done
 		}
 	}
 
+
+	// Reset walknode here, and then go through with all the assigns, prints, and returns
 	// At this point, all variables within the function's scope are declared. 
 	
 	//TODO: Generate code for the other things the function does here.
