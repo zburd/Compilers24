@@ -90,8 +90,11 @@ Program:
 ;
 
 Function:
-    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY {
+    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY Function{
         printf("Function %s\n", $3); // $3 is the IDENTIFIER
+    }
+    | /* empty */ {
+        printf("Function_Empty\n"); // No valid $1 reference here
     };
 
 Type:
