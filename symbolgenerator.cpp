@@ -71,10 +71,12 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Function" ) { 
 		switch (parent -> children.size()){
 			case 0: 
+				return (cname=="Function" || cname=="Function_Empty");
+			case 1: 
 				if (cname.length() > 7) {
 					return cname.substr(0,7) == "Inside_";
 				}else { return false; }
-			case 1: 
+			case 2: 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
 						cname == "K_STRING");
@@ -214,7 +216,7 @@ void declareFunction (ParseTreeNode* ftree){
 
 	// TODO: Add code to get the return pointer from where the function was called
 
-	while (walknode->children[1]->name != "Inside_Empty"){
+	while (walknode->children[2]->name != "Inside_Empty"){
 		walknode = walknode->children[1];
 		if (walknode->name == "Inside_Declare") {
 			//TODO: Put the variables on the stack here
@@ -228,6 +230,10 @@ void declareFunction (ParseTreeNode* ftree){
 
 	//TODO: Generate code to properly decrement the stack here.
 	//TODO: Generate a goto statement to go back to where the function was called.
+	
+
+	// Handle functions after this one.
+	if (ftree->children[0]->name == "Function") {declareFunction(ftree->children[0]);}
 	cout << "\n//Done inside function\n";
 }
 
