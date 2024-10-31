@@ -90,8 +90,11 @@ Program:
 ;
 
 Function:
-    K_FUNCTION Type IDENTIFIER LPAREN RPAREN LCURLY Inside RCURLY Function{
+    K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
         printf("Function %s\n", $3); // $3 is the IDENTIFIER
+    }
+    | K_PROCEDURE Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
+        printf("Procedure %s\n", $3); // $3 is the IDENTIFIER
     }
     | /* empty */ {
         printf("Function_Empty\n"); // No valid $1 reference here
@@ -101,6 +104,17 @@ Type:
     K_INTEGER { printf("K_INTEGER\n"); }
     | K_DOUBLE { printf("K_DOUBLE\n"); }
     | K_STRING { printf("K_STRING\n"); };
+
+Parameters:
+    Type IDENTIFIER{
+        printf("Parameters %s\n", $2); // $3 is the IDENTIFIER
+    }
+    | Type IDENTIFIER COMMA Parameters{
+        printf("Parameters %s\n", $3); // $3 is the IDENTIFIER
+    }
+    | /* empty */ {
+        printf("Parameters_Empty\n"); // No valid $1 reference here
+    };
 
 Inside:
     Type IDENTIFIER SEMI Inside {
