@@ -57,7 +57,27 @@ class ParseTreeNode {
 		    else if (dtype == 2) return "String.";
 		    else if (dtype == 3) return "Function.";
 		}
-
+		//stuff for scope checking
+		bool isChild()
+		{
+		    if (parent != nullptr) return true;
+		    else return false;
+		}
+        string belongsTo()
+        {
+            if (this->isChild()) return parent.name;
+            else return "Root node";
+        }
+        ParseTreeNode* getParent()
+        {
+            return parent;
+            //this will not check for errors or null ptrs, use the isChild function for that
+            //basically, something like 'if ischild then getparent'
+        }
+        
+       //this is for arithmetic stuff and ONLY for variables!
+       //see if you can do this for functions too maybe
+       
 };
 
 bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
