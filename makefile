@@ -13,7 +13,7 @@ a.out:
 	@./parser < tiny_example_1.f24 > parserout.txt
 
 g++:
-	@g++ symbolgenerator.cpp
+	@g++ codegenerator.cpp
 
 run:
 	@./a.out
