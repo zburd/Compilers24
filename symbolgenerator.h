@@ -74,7 +74,10 @@ class ParseTreeNode {
             //this will not check for errors or null ptrs, use the isChild function for that
             //basically, something like 'if ischild then getparent'
         }
-        
+        vector<ParseTreeNode*> getChildren()
+        {
+            return children; 
+        }
        //this is for arithmetic stuff and ONLY for variables!
        //see if you can do this for functions too maybe
        
@@ -263,7 +266,7 @@ void declareFunction (ParseTreeNode* ftree){
 	cout << "\n//Done inside function\n";
 }
 
-void generateCode (ParseTreeNode* ptree){
+/*void generateCode (ParseTreeNode* ptree){
 	// Pre-declare the funky string function so we don't have to suffer?
 	
 	// Symbol tables and variable management is handled in helper functions
@@ -285,4 +288,4 @@ int main(){
 	printParseTree(tree);
 
 	return 0;
-}
+}*/
