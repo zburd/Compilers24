@@ -93,8 +93,8 @@ Function:
     K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
         printf("Function %s\n", $3); // $3 is the IDENTIFIER
     }
-    | K_PROCEDURE Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
-        printf("Procedure %s\n", $3); // $2 is the IDENTIFIER
+    | K_PROCEDURE IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
+        printf("Procedure %s\n", $2); // $2 is the IDENTIFIER
     }
     | /* empty */ {
         printf("Function_Empty\n"); // No valid $1 reference here
@@ -109,11 +109,18 @@ Parameters:
     Type IDENTIFIER{
         printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
     }
-    | Type IDENTIFIER COMMA Parameters{
+    | Type IDENTIFIER COMMA ParametersS{
         printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
     }
     | /* empty */ {
         printf("Parameters_Empty\n"); // No valid $1 reference here
+    };
+ParametersS:
+    Type IDENTIFIER{
+        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
+    }
+    | Type IDENTIFIER COMMA ParametersS{
+        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
     };
 
 Inside:
@@ -126,8 +133,24 @@ Inside:
     | Print SEMI Inside {
         printf("Inside_Print\n"); // Print has no applicable items
     }
+    |  IDENTIFIER LPAREN Info RPAREN SEMI Inside{
+        printf("Inside_Function_Call %s\n", $1); // function calls made inside other functions
+    }
     | /* empty */ {
         printf("Inside_Empty\n"); // No valid $1 reference here
+    };
+Info:
+    Type COMMA Info {
+        printf("Inside_Function_Parameters");
+    }
+    | IDENTIFIER COMMA Info {
+        printf("Inside_Function_Parameters %s\n", $1);
+    }
+    | Type {
+        printf("Inside_Function_Parameters");
+    }
+    | IDENTIFIER {
+        printf("Inside_Function_Parameters %s\n", $1);
     };
 
 SetEqualTo:
