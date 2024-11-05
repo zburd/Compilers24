@@ -35,7 +35,7 @@ int main() {
     vector<ParseTreeNode*> firstclass = tree->getChildren();
     
     //if this is empty we have an empty program, this is invalid
-    if (firstclass.isEmpty()) {
+    if (firstclass->isEmpty()) {
         cout << "Syntax error: Program must not be empty.\n"; 
 	    return 0; 
     }
@@ -43,10 +43,10 @@ int main() {
     //with these checks satisfied, we can begin to process the functions and procedures inside of program
     
     //variables are NOT okay to have here yet!
-    for (int i = 0; i < firstclass.size(); i++)
+    for (int i = 0; i < firstclass->size(); i++)
     {
         
-        if (firstclass[i].isVariable()) {
+        if (firstclass[i]->isVariable()) {
             cout << "Syntax error: Only functions and procedures are allowed inside of program declaration.\n";
             return 0;
         }
@@ -59,10 +59,10 @@ int main() {
     
     ParseTreeNode* mainfuncnode;
     
-    for (int i = 0; i < firstclass.size(); i++)
+    for (int i = 0; i < firstclass->size(); i++)
     {
-        vector<ParseTreeNode*> second = firstclass[i].getChildren(); //this is the tree of each function declaration
-        for (int j = 0; j < second.size(); j++)
+        vector<ParseTreeNode*> second = firstclass[i]->getChildren(); //this is the tree of each function declaration
+        for (int j = 0; j < second->size(); j++)
         {
             if (second[j].name == "main") maincounter++;
             mainfuncnode = second[j];

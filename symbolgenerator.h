@@ -65,7 +65,7 @@ class ParseTreeNode {
 		}
         string belongsTo()
         {
-            if (this->isChild()) return parent.name;
+            if (this->isChild()) return parent->name;
             else return "Root node";
         }
         ParseTreeNode* getParent()
