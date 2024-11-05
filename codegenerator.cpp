@@ -21,7 +21,9 @@ int main() {
 
 	ParseTreeNode* tree = buildParseTreeFromFile (filename);
 	//step one, check for it being a program
-	
+
+	printParseTree (tree);
+
 	if (tree->name == "Program"){
 		// Start walking through the program and declaring functions
 		//declareFunction (tree -> children[0]);
