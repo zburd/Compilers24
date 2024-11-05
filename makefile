@@ -10,7 +10,7 @@ lex.yy.c:
 	@gcc parser.tab.c lex.yy.c -o parser -lm
 
 a.out:
-	@./parser < tiny_example_1.f24 > parserout.txt
+	@./parser < tiny_example_3.f24 > parserout.txt
 
 g++:
 	@g++ codegenerator.cpp

@@ -90,23 +90,39 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	string pname = parent -> name;
 	string cname = child -> name;
 
-	if ( pname == "Program" && parent->children.size() == 0) { return cname == "Function"; }
+	if ( pname == "Program" && parent->children.size() == 0) { return cname == "Function" || cname == "Procedure"; }
 	else if ( pname == "Function" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname=="Function" || cname=="Function_Empty");
+				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
 			case 1: 
 				if (cname.length() > 7) {
 					return cname.substr(0,7) == "Inside_";
 				}else { return false; }
 			case 2:
-				if (cname.length() > 7) {
+				if (cname.length() > 10) {
 					return cname.substr(0,10) == "Parameters";
 				}else { return false; }
 			case 3: 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
 						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Procedure" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
+			case 1: 
+				if (cname.length() > 7) {
+					return cname.substr(0,7) == "Inside_";
+				}else { return false; }
+			case 2:
+				if (cname.length() > 10) {
+					return cname.substr(0,10) == "Parameters";
+				}else { return false; }
 			default:
 				return false;
 		}
@@ -151,6 +167,21 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
+	else if ( pname == "Inside_Function_Call" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				if (cname.length() > 7) {
+					return cname.substr(0,7) == "Inside_";
+				}else { return false; }
+			case 1: //TODO: Get this part to work properly
+				return (cname == "PrintI" || 
+						cname == "PrintD" || 
+						cname == "PrintS");
+			default:
+				return false;
+		}
+	}
+
 	else if ( pname == "Assign" ) { 
 		switch (parent -> children.size()){
 			case 0: 
