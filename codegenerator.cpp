@@ -61,15 +61,17 @@ int main() {
     
     for (int i = 0; i < firstclass.size(); i++)
     {
-        /*
+        
         vector<ParseTreeNode*> second = firstclass[i]->getChildren(); //this is the tree of each function declaration
         for (int j = 0; j < second.size(); j++)
         {
-            if (second[j]->name == "main") maincounter++;
-            mainfuncnode = second[j];
-        }*/
-        if (firstclass[i]->name == "main") maincounter++;
-            mainfuncnode = firstclass[i];
+            if (second[j]->name == "main") 
+            {
+                maincounter++;
+                mainfuncnode = second[j];
+            }
+            
+        }
     }
     if (maincounter == 0) {
         cout << "Syntax error: No main function.\n";
