@@ -84,33 +84,34 @@ int main() {
     
 	//cout << "\n//Done inside program\n";
 	
-    printf("int yourmain()\n{");
-    int vars = 0;//int vars = function that count number of variables + 1
-    printf("    SR -= %d;\n", vars);
-    printf("    FR = SR;\n");
-    int varsi = 0;//int varsi = function that count number of int variables + 1
-    printf("    FR += %d;\n", varsi);
+    ofstream MyFile("yourmain.h");
+    
+    MyFile << "int yourmain()\n{\n    // Stack adjustment\n";
+    int vars = 1;//int vars = function that count number of variables
+    MyFile << "    SR -= " << vars << ";\n";
+    MyFile << "    FR = SR;\n";
+    int varsi = 1;//int varsi = function that count number of int variables
+    MyFile << "    FR += " << varsi << ";\n    // Variable Section\n";
 
     //info storage section  
-    for(int i; i < varsi; i++){//this is just for ints
-        int value = 0;//int value = function that gets the value of int
-        printf("    R[1] = %d;\n", value);
-        printf("    F24Time += (1);\n");
-        printf("    mem[SR+n] = R[1];\n");
-        printf("    F24Time += (20+1);\n");
+    for(int i = 0; i < varsi; i++){//this is just for ints
+        int value = 441;//int value = function that gets the value of int
+        MyFile << "    R[1] = " << value << ";\n";
+        MyFile << "    F24_Time += (1);\n";
+        MyFile << "    Mem[SR+" << i << "] = R[1];\n";
+        MyFile << "    F24_Time += (20+1);\n    // Print Section\n";
     }
 
     //print section
-    int prints = 0;//int prints = function to find prints in tree
-    for(int i; i < varsi; i++){
-        //if(print = int_print){printf("print_int(Mem[SR]);\n");}
-        //if(print = print_string){printf("print_string(Mem[SR]);\n");}
-        //if(print = print_double){printf("print_double(Mem[SR]);\n");}
-        printf("    print_int(Mem[SR]);\n");
+    int prints = 1;//function to find prints in tree
+    for(int i = 0; i < prints; i++){
+        //if(print = int_print){printf("print_int(Mem[SR]);");}
+        MyFile << "    print_int(Mem[SR]);\n";
     }
-    printf("    SR += %d;\n", vars);
-    printf("    return 0;\n");
-    printf("}");
+    MyFile << "    // Stack adjustment\n    SR += " << vars << ";\n", vars;
+    MyFile << "    return 0;\n";
+    MyFile << "}";
+    MyFile.close();
 	
     return 0;
 
