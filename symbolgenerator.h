@@ -96,11 +96,9 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
 			case 1: 
-				if (cname.length() > 7) {
-					return cname.substr(0,7) == "Inside_";
-				}else { return false; }
+				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 2:
-				if (cname.length() > 10) {
+				if (cname.length() >= 10) {
 					return cname.substr(0,10) == "Parameters";
 				}else { return false; }
 			case 3: 
@@ -116,9 +114,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
 			case 1: 
-				if (cname.length() > 7) {
-					return cname.substr(0,7) == "Inside_";
-				}else { return false; }
+				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 2:
 				if (cname.length() > 10) {
 					return cname.substr(0,10) == "Parameters";
@@ -130,9 +126,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Inside_Declare" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				if (cname.length() > 7) {
-					return cname.substr(0,7) == "Inside_";
-				}else { return false; }
+				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 1: 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
@@ -144,9 +138,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Inside_Assign" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				if (cname.length() > 7) {
-					return cname.substr(0,7) == "Inside_";
-				}else { return false; }
+				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 1: 
 				return cname == "Assign";
 			default:
@@ -156,9 +148,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Inside_Print" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				if (cname.length() > 7) {
-					return cname.substr(0,7) == "Inside_";
-				}else { return false; }
+				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 1: 
 				return (cname == "PrintI" || 
 						cname == "PrintD" || 
@@ -168,6 +158,18 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 		}
 	}
 	else if ( pname == "Inside_Function_Call" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+			case 1: //TODO: Add cases to structure out a function call
+				return (cname == "PrintI" || 
+						cname == "PrintD" || 
+						cname == "PrintS");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Function_Parameters" ) { 
 		switch (parent -> children.size()){
 			case 0: 
 				if (cname.length() > 7) {
@@ -182,6 +184,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 		}
 	}
 
+
 	else if ( pname == "Assign" ) { 
 		switch (parent -> children.size()){
 			case 0: 
@@ -190,6 +193,21 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 						cname == "Dconstant" || 
 						cname == "Sconstant");
 
+			default:
+				return false;
+		}
+	}
+	
+	else if ( pname == "Parameters" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname == "Parameters_Empty" || cname == "Parameters");
+			case 1:
+				return cname=="Identifier";
+			case 2: 
+				return (cname == "K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
 			default:
 				return false;
 		}
@@ -228,6 +246,7 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 				// If the node on the stack is a child of the new node,
 				// it is added to the new node and then popped
 				newNode -> addChild(nodeStack.top());
+				//std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
 				nodeStack.pop();
 			} else {break;}
 		}
