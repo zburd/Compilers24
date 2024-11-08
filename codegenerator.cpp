@@ -11,6 +11,7 @@ using std::string;
 using std::stack;
 using std::ifstream;
 using std::cout;
+using std::ofstream;
 
 
 
