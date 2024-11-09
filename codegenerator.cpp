@@ -13,6 +13,77 @@ using std::ifstream;
 using std::cout;
 using std::ofstream;
 
+//this class is for variable information, basically a condensed parsetreenode without
+//linked list properties, with some other special aspects to make things easier
+class varContainer {
+    private:
+        bool Pointer; //this is probably for stuff that is internal, just in case
+        bool Anonymous; //for variables without names, also just in case, eg at the end of return statements?
+        
+        int dtype; //same as parsetreenode, 0 = int, 1 = double, 2 = string
+        
+        string data; 
+        
+        string name;
+        
+        string owner; //name of function or procedure this variable belongs to
+            
+    public:
+        //constructor for parsetreenode input
+        varContainer(ParseTreeNode &PT) {
+            dtype = PT.dtype;
+            data = PT.data;
+            name = PT.name;
+            owner = PT.belongsTo();
+        }
+        //constructor for input of other varcontainers
+        varContainer(varContainer &NT) {
+            dtype = NT.getType();
+            data = NT.getData();
+            name = NT.getName();
+            owner = NT.ownsThis();
+        }
+        
+        //getters
+        int getType() {
+            return dtype;
+        }
+        string getName() {
+            return name;
+        }
+        string getData() {
+            return data;
+        }
+        //setters
+        void setType(int d) {
+            dtype = d;
+        }
+        void setName (string n) {
+            name = n;
+        }
+        void setData (string d) {
+            data = d;
+        }
+        //assignment operator overload to make our lives easier
+        //doesn't do checking though
+        varContainer operator= (ParseTreeNode &other) {
+            varContainer td(other);
+            return td;
+        }
+        varContainer operator= (varContainer &other) {
+            varContainer td(other);
+            return td;
+        }
+        //scope stuff, probably going to need more of this later on
+        string ownsThis() {
+            return owner;
+        }
+        //a sanity check we might need in the future
+        bool isNumeric() {
+            if (dtype == 0 || dtype == 1) return true;
+            else return false;
+        }
+};
 
 
 int main() {
