@@ -106,22 +106,17 @@ Type:
     | K_STRING { printf("K_STRING\n"); };
 
 Parameters:
-    Type IDENTIFIER{
+    Type IDENTIFIER ParametersS{
         printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
     }
-    | Type IDENTIFIER COMMA ParametersS{
+    | Type IDENTIFIER COMMA Parameters{
         printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
     }
-    | /* empty */ {
-        printf("Parameters_Empty\n"); // No valid $1 reference here
-    };
+    | ParametersS;
 ParametersS:
-    Type IDENTIFIER{
-        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
+    /* empty */ {
+        printf("Parameters_Empty\n"); // No valid $1 reference here
     }
-    | Type IDENTIFIER COMMA ParametersS{
-        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
-    };
 
 Inside:
     Type IDENTIFIER SEMI Inside {
