@@ -98,9 +98,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1: 
 				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 2:
-				if (cname.length() >= 10) {
-					return cname.substr(0,10) == "Parameters";
-				}else { return false; }
+				return (cname == "Parameters" || cname == "Parameters_Empty");
 			case 3: 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
@@ -116,9 +114,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1: 
 				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 2:
-				if (cname.length() > 10) {
-					return cname.substr(0,10) == "Parameters";
-				}else { return false; }
+				return (cname == "Parameters" || cname == "Parameters_Empty");
 			default:
 				return false;
 		}
