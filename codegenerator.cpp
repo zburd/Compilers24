@@ -138,7 +138,7 @@ int funcCounter(ParseTreeNode &PT){
 int lineCounter(ParseTreeNode &PT){
     int counter = 0;
     vector<ParseTreeNode*> children = PT.getChildren();
-    int size = children.size()-1;
+    int size = children.size();
     if(PT.data == "Function" || PT.data == "Procedure"){size--;}
     for(int i = 0; i < size; i++){
         if(children[i]->name == "Assign"){
