@@ -1,6 +1,6 @@
 .PHONY: all flex lex.yy.c a.out clean
 
-all: flex lex.yy.c a.out g++ run
+all: flex lex.yy.c a.out
 
 flex:
 	@bison -d parser.y
@@ -10,7 +10,7 @@ lex.yy.c:
 	@gcc parser.tab.c lex.yy.c -o parser -lm
 
 a.out:
-	@./parser < tiny_example_3.f24 > parserout.txt
+	@./parser < mg.f24 > parserout.txt
 
 g++:
 	@g++ codegenerator.cpp

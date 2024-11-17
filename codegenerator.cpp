@@ -28,7 +28,7 @@ class varContainer {
 
         string owner; //name of function or procedure this variable belongs to
 
-        ParseTreeNode* firstChild;
+        ParseTreeNode* varTree;
 
     public:
         //constructor for parsetreenode input
@@ -37,7 +37,7 @@ class varContainer {
             data = PT.data;
             name = PT.name;
             owner = PT.belongsTo();
-            firstChild = PT.getChildren()[0];
+            varTree = &PT;
         }
         //constructor for input of other varcontainers
         varContainer(const varContainer &NT) {
@@ -45,7 +45,7 @@ class varContainer {
             data = NT.getData();
             name = NT.getName();
             owner = NT.ownsThis();
-            firstChild = NT.getFirstChild();
+            varTree = NT.getVarTree();
         }
 
         //getters
@@ -58,8 +58,8 @@ class varContainer {
         string getData() const{
             return data;
         }
-        ParseTreeNode* getFirstChild() const{
-            return firstChild;
+        ParseTreeNode* getVarTree() const{
+            return varTree;
         }
         //assignment operator overload to make our lives easier
         //doesn't do checking though
@@ -135,31 +135,6 @@ int funcCounter(ParseTreeNode &PT){
     return counter;
 }
 
-int lineCounter(ParseTreeNode &PT){
-    int counter = 0;
-    vector<ParseTreeNode*> children = PT.getChildren();
-    int size = children.size();
-    if(PT.data == "Function" || PT.data == "Procedure"){size--;}
-    for(int i = 0; i < size; i++){
-        if(children[i]->name == "Assign"){
-            lineInfo.push_back(varContainer(*children[i]));
-            counter += 1 + lineCounter(*children[i]);
-        }
-        else if(children[i]->name == "Inside_Print" ){
-            lineInfo.push_back(varContainer(*children[i]));
-            counter += 1 + lineCounter(*children[i]);
-        }
-        else if(children[i]->name == "Inside_Function_Call" ){
-            //lineInfo.push_back(varContainer(*children[i]->children[0]));
-            counter += 1 + lineCounter(*children[i]);
-        }
-        else if(size != i){
-            counter += lineCounter(*children[i]);
-        }
-    }
-    return counter;
-}
-
 int vectorFinder(vector<varContainer> NT, string var){
     for(int i = 0; i < NT.size(); i++){
         if(var == NT[i].getData()){
@@ -168,6 +143,24 @@ int vectorFinder(vector<varContainer> NT, string var){
     }
     return -1;
 }
+
+void lineCounter(ParseTreeNode &PT){
+    vector<ParseTreeNode*> children = PT.getChildren();
+    int size = children.size()-1;
+    if(PT.name == "Function" || PT.name == "Procedure"){size--;}
+    string info = children[size]->name;
+    if(info == "Inside_Declare" || info == "Inside_Declare_Assign"
+        || info == "Inside_Assign" || info == "Inside_Print"
+    ){
+        lineInfo.push_back(varContainer(*children[size]));
+        lineCounter(*children[size]);
+    }
+    else if(info == "Inside_Function_Call"){
+        lineInfo.push_back(varContainer(*children[size]));
+        lineCounter(*funcInfo[vectorFinder(funcInfo, children[size]->data)].getVarTree());
+    }
+}
+
 
 int mainFinder(vector<varContainer> NT){
     int counter = 0;
@@ -242,6 +235,13 @@ int main() {
 
     ofstream MyFile("yourmain.h");
 
+    lineCounter(*funcInfo[vectorFinder(funcInfo, "main")].getVarTree());
+
+
+    for(int i = 0; i < lineInfo.size(); i++){
+        cout << "data for line is " << lineInfo[i].getData() << ". name for line is " << lineInfo[i].getName() << ". " << i << "\n";
+    }
+
     MyFile << "int yourmain()\n{\n    // Stack adjustment\n";
     int vars = varCounter(*tree);
     MyFile << "    SR -= " << vars << ";\n";
@@ -249,36 +249,37 @@ int main() {
     int varsi = intVarCounter(*tree);
     MyFile << "    FR += " << varsi << ";\n";
 
-    int codeLines = lineCounter(*tree);
+    /*
     for(int i = 0; i < codeLines; i++){
         string expression = lineInfo[i].getName();
         //info storage section
-        if(expression == "Assign" && lineInfo[i].getFirstChild()->name == "Iconstant"){
-            string Ivalue = lineInfo[i].getFirstChild()->data;//int value = function that gets the value of int:
+        if(expression == "Assign" && lineInfo[i].getFirstChild()[0]->name == "Iconstant"){
+            string Ivalue = lineInfo[i].getFirstChild()[0]->data;//int value = function that gets the value of int:
             MyFile << "    // Variable Section\n    R[1] = " << Ivalue << ";\n";
             MyFile << "    F24_Time += (1);\n";
             MyFile << "    Mem[SR+" << vectorFinder(varInfo, lineInfo[i].getData()) << "] = R[1];\n";
             MyFile << "    F24_Time += (20+1);\n";
         }
-        else if(expression == "Assign" && lineInfo[i].getFirstChild()->name == "Dconstant"){
+        else if(expression == "Assign" && lineInfo[i].getFirstChild()[0]->name == "Dconstant"){
             string Dvalue = "here";//lineInfo[i].getFirstChild()->data;//function that gets the value of double
             MyFile << "    F[1] = " << Dvalue << ";\n";
             MyFile << "    F24_Time += (2);\n";
             MyFile << "    FMem[FR+" << vectorFinder(varInfo, lineInfo[i].getData()) << "] = F[1];\n";
             MyFile << "    F24_Time += (20+2);\n";
         }
-        else if(expression == "Assign" && lineInfo[i].getFirstChild()->name == "Sconstant"){
+        else if(expression == "Assign" && lineInfo[i].getFirstChild()[0]->name == "Sconstant"){
             //string Svalue = "here";//function that gets the string
             MyFile << "    SMem[FR+" << i << "] = F[1];\n";
             MyFile << "    F24_Time += (20+1);\n";
         }
         else if(expression == "Inside_Print"){
-            if(lineInfo[i].getFirstChild()->name == "PrintI"){MyFile << "    // Print Section\n    print_int(Mem[SR+" << vectorFinder(varInfo, lineInfo[i].getFirstChild()->data) << "]);\n";}
-            if(lineInfo[i].getFirstChild()->name == "PrintD"){MyFile << "    // Print Section\n    print_double(FMem[FR]);\n";}
-            if(lineInfo[i].getFirstChild()->name == "PrintS"){MyFile << "    // Print Section\n    print_string("<< lineInfo[i].getFirstChild()->data <<");\n";}
+            if(lineInfo[i].getFirstChild()[0]->name == "PrintI"){MyFile << "    // Print Section\n    print_int(Mem[SR+" << vectorFinder(varInfo, lineInfo[i].getFirstChild()[0]->data) << "]);\n";}
+            if(lineInfo[i].getFirstChild()[0]->name == "PrintD"){MyFile << "    // Print Section\n    print_double(FMem[FR]);\n";}
+            if(lineInfo[i].getFirstChild()[0]->name == "PrintS"){MyFile << "    // Print Section\n    print_string("<< lineInfo[i].getFirstChild()[0]->data <<");\n";}
         }
 
     }
+    */
     MyFile << "    // Stack adjustment\n    SR += " << vars << ";\n";
     MyFile << "    return 0;\n";
     MyFile << "}";

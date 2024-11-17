@@ -34,7 +34,7 @@ ASSIGN_MINUS       "-="
 ASSIGN_MULTIPLY    "*="
 ASSIGN_DIVIDE      "/="
 ASSIGN_MOD         "%="
-COMMENT            [/]{2}.*
+COMMENT            [/]{2}[^\n]*
 DAND               "&&"
 DOR                "||"
 DEQ                "=="
@@ -97,7 +97,7 @@ DCONSTANT (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))(d[-+]?[0-9]+)?
 {ASSIGN_MULTIPLY} { return ASSIGN_MULTIPLY; }
 {ASSIGN_DIVIDE} { return ASSIGN_DIVIDE; }
 {ASSIGN_MOD} { return ASSIGN_MOD; }
-{COMMENT} { return COMMENT; }
+{COMMENT} { /*Do Nothing*/ }
 {DAND} { return DAND; }
 {DOR} { return DOR; }
 {DEQ} { return DEQ; }

@@ -249,7 +249,7 @@ program $two_grid_solver
     {
         integer rval := 0;      // Return value
         integer fm1:=1, cm1;    // Fine and coarse mesh upper limits
-        integer nvcycles = 3;   // How many V cycles
+        integer nvcycles := 3;   // How many V cycles
         double  enorm;          // Error norm
 
         // Determine fine mesh size.  Coarse mesh is roughly half the size.
