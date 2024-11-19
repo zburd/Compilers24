@@ -96,7 +96,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
 			case 1: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 2:
 				return (cname == "Parameters" || cname == "Parameters_Empty");
 			case 3: 
@@ -112,7 +112,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
 			case 1: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 2:
 				return (cname == "Parameters" || cname == "Parameters_Empty");
 			default:
@@ -122,7 +122,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Inside_Declare" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 1: 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
@@ -134,7 +134,17 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Inside_Assign" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+			case 1: 
+				return cname == "Assign";
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Read" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 1: 
 				return cname == "Assign";
 			default:
@@ -144,7 +154,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Inside_Print" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 1: 
 				return (cname == "PrintI" || 
 						cname == "PrintD" || 
@@ -156,7 +166,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if ( pname == "Inside_Function_Call" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
 			case 1: //TODO: Add cases to structure out a function call
 				return (cname == "Inside_Function_Parameters");
 			default:
