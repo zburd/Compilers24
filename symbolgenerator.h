@@ -83,6 +83,237 @@ class ParseTreeNode {
        
 };
 
+bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
+	// This function handles all the "Inside_" parse tree functions to clean up the code.
+	string pname = parent -> name;
+	string cname = child -> name;
+
+
+	if ( pname == "Inside_Declare" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: 
+				return (cname == "K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Assign" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: 
+				return cname == "Assign";
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Read" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: 
+				return cname == "Assign";
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Print" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: 
+				return (cname == "PrintI" || 
+						cname == "PrintD" || 
+						cname == "PrintS");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Function_Call" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: //TODO: Add cases to structure out a function call
+				return (cname == "Inside_Function_Parameters");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+
+
+bool isParentIf (ParseTreeNode* parent, ParseTreeNode* child) {
+	string pname = parent -> name;
+	string cname = child -> name;
+	if ( pname == "If_More" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	// Will need to be changed, should be If_More_Else_Once
+	else if ( pname == "If_More_Else" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+		//	Swap the above to case 1, and set this to the new case 0 to swap
+		//	case 0: 
+		//		return (cname.substr(0, 5) == "Once_");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "If_More_Else_More" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "If_Once" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 5) == "Once_");
+			default:
+				return false;
+		}
+	}
+	// Will need to be changed, should be If_Once_Else_Once
+	else if ( pname == "If_Once_Else" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 5) == "Once_");
+		//	case 1: 
+		//		return (cname.substr(0, 5) == "Once_");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "If_Once_Else_More" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: 
+				return (cname.substr(0, 5) == "Once_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+
+bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if (pname == "Once_Inside_Declare" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Once_Inside_Assign" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Once_Inside_Print" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Once_Inside_Read" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Once_Inside_Function_Call" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Once_Inside_Do" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 2: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Once_Return_Item" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+bool isParentCondition (ParseTreeNode* parent, ParseTreeNode* child) {
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if (pname == "Condition_Only" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname == "CondEq"); // Needs replacement with a way to get item child
+			case 1: 
+				return (cname == "CondEq");
+			case 2: 
+				return (cname == "CondEq"); // Needs replacement with a way to get item child
+
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Condition_Not" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 10) == "Condition_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "Condition_Or" || pname == "Condition_And") { 
+		switch (parent -> children.size()){
+			// First 3 cases the same as Condition_Only once fixed
+			case 3: 
+				return (cname.substr(0, 10) == "Condition_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
 bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	// stuff for each line type
 	if (child == nullptr) {return false;}
@@ -96,7 +327,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
 			case 1: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname.substr(0, 7) == "Inside_");
 			case 2:
 				return (cname == "Parameters" || cname == "Parameters_Empty");
 			case 3: 
@@ -112,67 +343,18 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname=="Function" || cname=="Procedure" || cname=="Function_Empty");
 			case 1: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
+				return (cname.substr(0, 7) == "Inside_");
 			case 2:
 				return (cname == "Parameters" || cname == "Parameters_Empty");
 			default:
 				return false;
 		}
 	}
-	else if ( pname == "Inside_Declare" ) { 
-		switch (parent -> children.size()){
-			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
-			case 1: 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
-			default:
-				return false;
-		}
-	}
-	else if ( pname == "Inside_Assign" ) { 
-		switch (parent -> children.size()){
-			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
-			case 1: 
-				return cname == "Assign";
-			default:
-				return false;
-		}
-	}
-	else if ( pname == "Inside_Read" ) { 
-		switch (parent -> children.size()){
-			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
-			case 1: 
-				return cname == "Assign";
-			default:
-				return false;
-		}
-	}
-	else if ( pname == "Inside_Print" ) { 
-		switch (parent -> children.size()){
-			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
-			case 1: 
-				return (cname == "PrintI" || 
-						cname == "PrintD" || 
-						cname == "PrintS");
-			default:
-				return false;
-		}
-	}
-	else if ( pname == "Inside_Function_Call" ) { 
-		switch (parent -> children.size()){
-			case 0: 
-				return (cname == "Inside_Assign" ||cname == "Inside_Read" ||cname == "Inside_Print"||cname == "Inside_Function_Call" ||cname == "Inside_Declare" || cname == "Inside_Empty");
-			case 1: //TODO: Add cases to structure out a function call
-				return (cname == "Inside_Function_Parameters");
-			default:
-				return false;
-		}
-	}
+	else if (cname.substr(0, 7) == "Inside_") { return isParentInside(parent, child); }
+	else if (cname.substr(0, 3) == "If_") { return isParentIf(parent, child); }
+	else if (cname.substr(0, 5) == "Once_") { return isParentOnce(parent, child); }
+	else if (cname.substr(0, 10) == "Condition_") { return isParentCondition(parent, child); }
+
 	else if ( pname == "Inside_Function_Parameters" ) { 
 		switch (parent -> children.size()){
 			case 0: 

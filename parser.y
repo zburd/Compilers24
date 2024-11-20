@@ -239,45 +239,47 @@ Once:
         printf("Once_Inside_Do \n"); // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI {
-        printf("Once_Increment_item\n"); // No valid $1 reference here
+        printf("Once_Increment_item %s\n", $1); // Identifier stored in data
     }
     | IDENTIFIER DECREMENT SEMI {
-        printf("Once_Decrement_item\n"); // No valid $1 reference here
+        printf("Once_Decrement_item %s\n", $1); // Identifier stored in data 
     }
     | K_RETURN Item SEMI{
         printf("Once_Return_Item\n"); // No valid $1 reference here
     };
 
 Conditional:
-    Item ConditionalEquation Item
+    Item ConditionalEquation Item{
+        printf("Condition_Only\n");
+    }
     | NOT LPAREN Conditional RPAREN{
-        printf("Not_Condition !\n");
+        printf("Condition_Not !\n");
     }
     | Conditional DOR Item ConditionalEquation Item{
-        printf("Or_Condition ||\n");
+        printf("Condition_Or ||\n");
     }
     | Conditional DAND Item ConditionalEquation Item{
-        printf("And_Condition &&\n");
+        printf("Condition_And &&\n");
     };
 
 ConditionalEquation:
     DEQ{
-        printf("DEQ ==\n");
+        printf("CondEq ==\n");
     }
     | GEQ{
-        printf("GEQ >=\n");
+        printf("CondEq >=\n");
     }
     | LEQ{
-        printf("LEQ <=\n");
+        printf("CondEq <=\n");
     }
     | NE{
-        printf("NE !=\n");
+        printf("CondEq !=\n");
     }
     | GT{
-        printf("GT >\n");
+        printf("CondEq >\n");
     }
     | LT{
-        printf("LT <\n");
+        printf("CondEq <\n");
     };
 
 
