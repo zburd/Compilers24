@@ -148,10 +148,10 @@ Inside:
         printf("Inside_Do \n"); // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI Inside{
-        printf("Increment_item\n"); // No valid $1 reference here
+        printf("Inside_Increment_item\n"); // No valid $1 reference here
     }
     | IDENTIFIER DECREMENT SEMI Inside{
-        printf("Decrement_item\n"); // No valid $1 reference here
+        printf("Inside_Decrement_item\n"); // No valid $1 reference here
     }
     | K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
         printf("Function \n"); // $3 is the IDENTIFIER
@@ -160,7 +160,7 @@ Inside:
         printf("Procedure %s\n", $2); // $2 is the IDENTIFIER
     }
     | K_RETURN Item SEMI{
-        printf("Return_Item\n"); // No valid $1 reference here
+        printf("Inside_Return_Item\n"); // No valid $1 reference here
     }
     | /* empty */ {
         printf("Inside_Empty\n"); // No valid $1 reference here
@@ -170,90 +170,124 @@ Declare:
     | Type SetEqualTo COMMA Declare1;
 Declare1:
     SetEqualTo
-    | SetEqualTo COMMA Declare1;
+    | SetEqualTo COMMA Declare1;//think about pritf more
 
 InsideDo:
-    LCURLY Inside RCURLY
-    | Once ;
+    LCURLY Inside RCURLY{
+        printf("Do_More\n");
+    }
+    | Once{
+        printf("Do_Once\n");
+    };
 
 LoopParam:
-    IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER DECREMENT{}
-    | IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER INCREMENT{}
-    | Conditional{};
+    IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER DECREMENT{
+        printf("LoopParam %s--\n", $1);
+    }
+    | IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER INCREMENT{
+        printf("LoopParam %s++\n", $1);
+    }
+    | Conditional;
 
 Till:
-    K_WHILE{}
-    | K_UNTIL{}
-    | /*empty*/ {};
+    K_WHILE{
+        printf("While\n");
+    }
+    | K_UNTIL{
+        printf("Until\n");
+    }
+    | /*empty*/ {
+        printf("For\n");
+    };
 
 InsideIf:
-    LCURLY Inside RCURLY K_ELSE
-    | LCURLY Inside RCURLY K_ELSE LCURLY Inside RCURLY
-    | LCURLY Inside RCURLY
-    | Once K_ELSE LCURLY Inside RCURLY
-    | Once K_ELSE
-    | Once;
+    LCURLY Inside RCURLY K_ELSE{
+        printf("If_More_Else\n");
+    }
+    | LCURLY Inside RCURLY K_ELSE LCURLY Inside RCURLY{
+        printf("If_More_Else_More\n");
+    }
+    | LCURLY Inside RCURLY{
+        printf("If_More\n");
+    }
+    | Once K_ELSE LCURLY Inside RCURLY{
+        printf("If_Once_Else_More\n");
+    }
+    | Once K_ELSE{
+        printf("If_Once_Else\n");
+    }
+    | Once{
+        printf("If_Once\n");
+    };
 Once:
     Declare SEMI {
-        printf("Inside_Declare \n"); // $2 is the IDENTIFIER
+        printf("Once_Inside_Declare \n"); // $2 is the IDENTIFIER
     }
     | SetEqualTo SEMI {
-        printf("Inside_Assign %s\n", $1); // This has to be updated based on actual items
+        printf("Once_Inside_Assign %s\n", $1); // This has to be updated based on actual items
     }
     | Print SEMI {
-        printf("Inside_Print\n"); // Print has no applicable items
+        printf("Once_Inside_Print\n"); // Print has no applicable items
     }
     | Read SEMI {
-        printf("Inside_Read\n"); // Print has no applicable items
+        printf("Once_Inside_Read\n"); // Print has no applicable items
     }
     | IDENTIFIER LPAREN Info RPAREN SEMI {
-        printf("Inside_Function_Call %s\n", $1); // function calls made inside other functions
+        printf("Once_Inside_Function_Call %s\n", $1); // function calls made inside other functions
     }
     | K_DO Till LPAREN LoopParam RPAREN InsideDo {
-        printf("Inside_Do \n"); // function calls made inside other functions
+        printf("Once_Inside_Do \n"); // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI {
-        printf("Increment_item\n"); // No valid $1 reference here
+        printf("Once_Increment_item\n"); // No valid $1 reference here
     }
     | IDENTIFIER DECREMENT SEMI {
-        printf("Decrement_item\n"); // No valid $1 reference here
+        printf("Once_Decrement_item\n"); // No valid $1 reference here
     }
     | K_RETURN Item SEMI{
-        printf("Return_Item\n"); // No valid $1 reference here
+        printf("Once_Return_Item\n"); // No valid $1 reference here
     };
 
 Conditional:
-    Item ConditionalEquation Item{}
-    | NOT LPAREN Conditional RPAREN{}
-    | Conditional DOR Item ConditionalEquation Item{}
-    | Conditional DAND Item ConditionalEquation Item{};
+    Item ConditionalEquation Item
+    | NOT LPAREN Conditional RPAREN{
+        printf("Not_Condition !\n");
+    }
+    | Conditional DOR Item ConditionalEquation Item{
+        printf("Or_Condition ||\n");
+    }
+    | Conditional DAND Item ConditionalEquation Item{
+        printf("And_Condition &&\n");
+    };
 
 ConditionalEquation:
-    DEQ
-    | GEQ
-    | LEQ
-    | NE
-    | GT
-    | LT;
+    DEQ{
+        printf("DEQ ==\n");
+    }
+    | GEQ{
+        printf("GEQ >=\n");
+    }
+    | LEQ{
+        printf("LEQ <=\n");
+    }
+    | NE{
+        printf("NE !=\n");
+    }
+    | GT{
+        printf("GT >\n");
+    }
+    | LT{
+        printf("LT <\n");
+    };
 
 
 Info:
-    Info1 COMMA Info {
-        printf("Inside_Function_Parameters");
+    Item COMMA Info {
+        printf("Inner_Function_Parameters\n");
     }
-    | IDENTIFIER COMMA Info {
-        printf("Inside_Function_Parameters %s\n", $1);
-    }
-    | Info1 {
-        printf("Inside_Function_Parameters");
-    }
-    | IDENTIFIER {
-        printf("Inside_Function_Parameters %s\n", $1);
+    | Item {
+        printf("Inner_Function_Parameters\n");
     };
-Info1:
-    SCONSTANT
-    | ICONSTANT
-    | DCONSTANT;
 
 SetEqualTo:
     IDENTIFIER ASSIGN Item {
@@ -275,26 +309,32 @@ SetEqualTo:
         printf("Assign_Plus %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN Item {
-        printf("Assign %s\n", $1); // $1 is the IDENTIFIER
+        printf("Assign_Array %s\n", $1); // $1 is the IDENTIFIER
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_DIVIDE Item {
-        printf("Assign_Divide %s\n", $1);
+        printf("Assign_Divide_Array %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MINUS Item {
-        printf("Assign_Minus %s\n", $1);
+        printf("Assign_Minus_Array %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MOD Item {
-        printf("Assign_Mod %s\n", $1);
+        printf("Assign_Mod_Array %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MULTIPLY Item {
-        printf("Assign_Multiply %s\n", $1);
+        printf("Assign_Multiply_Array %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_PLUS Item {
-        printf("Assign_Plus %s\n", $1);
+        printf("Assign_Plus_Array %s\n", $1);
     }
-    | IDENTIFIER {}
-    | IDENTIFIER LBRACKET Math RBRACKET {}
-    | /* empty */ {};
+    | IDENTIFIER {
+        printf("Identifier %s\n", $1);
+    }
+    | IDENTIFIER LBRACKET Math RBRACKET {
+        printf("Identifier_Array %s\n", $1);
+    }
+    | /* empty */ {
+        printf("Empty %s\n");
+    };
 
 Print:
     K_PRINT_INTEGER LPAREN Item RPAREN {
@@ -308,57 +348,93 @@ Print:
     };
 Read:
     K_READ_INTEGER LPAREN IDENTIFIER RPAREN {
-        printf("PrintI %s\n", $3); // $3 is the IDENTIFIER
+        printf("ReadI %s\n", $3); // $3 is the IDENTIFIER
     }
     | K_READ_STRING LPAREN IDENTIFIER RPAREN {
-        printf("PrintS %s\n", $3);
+        printf("ReadS %s\n", $3);
     }
     | K_READ_DOUBLE LPAREN IDENTIFIER RPAREN {
-        printf("PrintD %s\n", $3);
+        printf("ReadD %s\n", $3);
     }
     | K_READ_INTEGER LPAREN ICONSTANT RPAREN {
-        printf("PrintI %s\n", $3); // $3 is ICONSTANT
+        printf("ReadI %s\n", $3); // $3 is ICONSTANT
     }
     | K_READ_STRING LPAREN SCONSTANT RPAREN {
-        printf("PrintS %s\n", $3); // $3 is SCONSTANT
+        printf("ReadS %s\n", $3); // $3 is SCONSTANT
     }
     | K_READ_DOUBLE LPAREN DCONSTANT RPAREN {
-        printf("PrintD %s\n", $3); // $3 is DCONSTANT
+        printf("ReadD %s\n", $3); // $3 is DCONSTANT
     };
 
 Item:
     SCONSTANT {
         printf("Sconstant %s\n", $1); // $1 is SCONSTANT
     }
-    | IDENTIFIER ASSIGN Item
-    | IDENTIFIER LBRACKET MathI RBRACKET ASSIGN Item
-    | MathI {};
+    | IDENTIFIER ASSIGN Item {
+        printf("Assign %s\n", $1); // $1 is the IDENTIFIER
+    }
+    | IDENTIFIER LBRACKET MathI RBRACKET ASSIGN Item {
+        printf("Assign_Array %s\n", $1); // $1 is the IDENTIFIER
+    }
+    | MathI{};
 
 Math:
     MathI
     | /* empty */;
 MathI:
-    MathI PLUS MathI2
-    | MathI MINUS MathI2
+    MathI PLUS MathI2{
+        printf("Plus +\n");
+    }
+    | MathI MINUS MathI2{
+        printf("Minus -\n");
+    }
     | MathI2;
 MathI2:
-    MathI2 MULTIPLY MathI3
-    | MathI2 MOD MathI3
-    | MathI2 DIVIDE MathI3
+    MathI2 MULTIPLY MathI3{
+        printf("Multiply *\n");
+    }
+    | MathI2 MOD MathI3{
+        printf("Mod %\n");
+    }
+    | MathI2 DIVIDE MathI3{
+        printf("Divide /\n");
+    }
     | MathI3;
 MathI3:
-    IDENTIFIER{}
-    | ICONSTANT{}
-    | DCONSTANT{}
-    | IDENTIFIER INCREMENT
-    | IDENTIFIER DECREMENT
+    IDENTIFIER{
+        printf("Identifier %s\n", $1);
+    }
+    | ICONSTANT{
+        printf("Iconstant %s\n", $1);
+    }
+    | DCONSTANT{
+        printf("Dconstant %s\n", $1);
+    }
+    | IDENTIFIER INCREMENT{
+        printf("Identifier_Increment %s++\n", $1);
+    }
+    | IDENTIFIER DECREMENT{
+        printf("Identifier_Decrement %s--\n", $1);
+    }
     | LPAREN MathI RPAREN
-    | MINUS IDENTIFIER
-    | MINUS ICONSTANT
-    | MINUS DCONSTANT
-    | MINUS IDENTIFIER LBRACKET MathI RBRACKET
-    | IDENTIFIER LBRACKET MathI RBRACKET{}
-    | IDENTIFIER LPAREN Info RPAREN{};
+    | MINUS IDENTIFIER{
+        printf("Negative_Identifier -%s\n", $2);
+    }
+    | MINUS ICONSTANT{
+        printf("Negative_Iconstant -%s\n", $2);
+    }
+    | MINUS DCONSTANT{
+        printf("Negative_Dconstant -%s\n", $2);
+    }
+    | MINUS IDENTIFIER LBRACKET MathI RBRACKET{
+        printf("Negative_Array -%s\n", $2);
+    }
+    | IDENTIFIER LBRACKET MathI RBRACKET{
+        printf("Array %s\n", $1);
+    }
+    | IDENTIFIER LPAREN Info RPAREN{
+        printf("Function_Call %s\n", $1);
+    };
 
 %%
 // Main function
