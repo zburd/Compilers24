@@ -314,6 +314,87 @@ bool isParentCondition (ParseTreeNode* parent, ParseTreeNode* child) {
 	}
 	else { return false; }
 }
+
+bool isParentPrint (ParseTreeNode* parent, ParseTreeNode* child) {
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if (pname.substr(0, 5)== "Print"){
+		switch (parent ->children.size()){
+			case 0:
+				return (cname.substr(0, 5)== "Item_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+
+bool isParentItem (ParseTreeNode* parent, ParseTreeNode* child) {
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if (pname== "Item_Assign"){
+		switch (parent ->children.size()){
+			case 0:
+				return (cname.substr(0,5)== "Item_");
+			default:
+				return false;
+		}
+	}
+	if (pname== "Item_Assign_Array"){
+		switch (parent ->children.size()){
+			case 0:
+				return (cname.substr(0,5)== "Item_");
+			case 1:
+				return (cname== "Math_Equation");
+			default:
+				return false;
+		}
+	}
+	if (pname== "Item_Math_Equation"){
+		switch (parent ->children.size()){
+			case 0:
+				return (cname== "Math_Equation");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+bool isParentAssign (ParseTreeNode* parent, ParseTreeNode* child) {
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if (pname.substr(0,11)== "Assign_Item"){
+		switch (parent ->children.size()){
+			case 0:
+				return (cname.substr(0,5)== "Item_");
+			default:
+				return false;
+		}
+	}
+	if (pname.substr(0,12)== "Assign_Array"){
+		switch (parent ->children.size()){
+			case 0:
+				return (cname.substr(0,5)== "Item_");
+			case 1:
+				return (cname== "Math_Equation");
+			default:
+				return false;
+		}
+	}
+	if (pname== "Assign_Identifier_Array"){
+		switch (parent ->children.size()){
+			case 0:
+				return (cname== "Math_Equation");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+
 bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	// stuff for each line type
 	if (child == nullptr) {return false;}
@@ -350,11 +431,14 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
-	else if (cname.substr(0, 7) == "Inside_") { return isParentInside(parent, child); }
-	else if (cname.substr(0, 3) == "If_") { return isParentIf(parent, child); }
-	else if (cname.substr(0, 5) == "Once_") { return isParentOnce(parent, child); }
-	else if (cname.substr(0, 10) == "Condition_") { return isParentCondition(parent, child); }
-
+	else if (pname.substr(0, 7) == "Inside_") { return isParentInside(parent, child); }
+	else if (pname.substr(0, 3) == "If_") { return isParentIf(parent, child); }
+	else if (pname.substr(0, 5) == "Once_") { return isParentOnce(parent, child); }
+	else if (pname.substr(0, 10) == "Condition_") { return isParentCondition(parent, child); }
+	else if (pname.substr(0, 5)== "Print") { return isParentPrint(parent, child); }
+	else if (pname.substr(0, 5)== "Item_") { return isParentItem(parent, child); }
+	else if (pname.substr(0, 7)== "Assign_") { return isParentAssign(parent, child); }
+	
 	else if ( pname == "Inside_Function_Parameters" ) { 
 		switch (parent -> children.size()){
 			case 0: 
