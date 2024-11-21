@@ -1,0 +1,28 @@
+program custom_example_1
+{
+    function integer main()
+    {
+        integer o := 5;
+        integer arr[8];
+        
+        //dual arg ops
+        arr[0] := o + 1;
+        arr[1] := o - 1;
+        arr[2] := o * 1;
+        arr[3] := o / 1;
+        arr[4] := o % 1;
+        
+        //unary ops
+        arr[5] := -o;
+        
+        arr[6] = o;
+        arr[7] = o;
+        
+        arr[6]++;
+        arr[7]--;
+        
+        
+        return 0;
+    }
+
+}
