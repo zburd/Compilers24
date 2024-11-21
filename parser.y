@@ -293,49 +293,49 @@ Info:
 
 SetEqualTo:
     IDENTIFIER ASSIGN Item {
-        printf("Assign %s\n", $1); // $1 is the IDENTIFIER
+        printf("Assign_Item %s\n", $1); // $1 is the IDENTIFIER
     }
     | IDENTIFIER ASSIGN_DIVIDE Item {
-        printf("Assign_Divide %s\n", $1);
+        printf("Assign_Item_Divide %s\n", $1);
     }
     | IDENTIFIER ASSIGN_MINUS Item {
-        printf("Assign_Minus %s\n", $1);
+        printf("Assign_Item_Minus %s\n", $1);
     }
     | IDENTIFIER ASSIGN_MOD Item {
-        printf("Assign_Mod %s\n", $1);
+        printf("Assign_Item_Mod %s\n", $1);
     }
     | IDENTIFIER ASSIGN_MULTIPLY Item {
-        printf("Assign_Multiply %s\n", $1);
+        printf("Assign_Item_Multiply %s\n", $1);
     }
     | IDENTIFIER ASSIGN_PLUS Item {
-        printf("Assign_Plus %s\n", $1);
+        printf("Assign_Item_Plus %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN Item {
         printf("Assign_Array %s\n", $1); // $1 is the IDENTIFIER
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_DIVIDE Item {
-        printf("Assign_Divide_Array %s\n", $1);
+        printf("Assign_Array_Divide %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MINUS Item {
-        printf("Assign_Minus_Array %s\n", $1);
+        printf("Assign_Array_Minus %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MOD Item {
-        printf("Assign_Mod_Array %s\n", $1);
+        printf("Assign_Array_Mod %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MULTIPLY Item {
-        printf("Assign_Multiply_Array %s\n", $1);
+        printf("Assign_Array_Multiply %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_PLUS Item {
-        printf("Assign_Plus_Array %s\n", $1);
+        printf("Assign_Array_Plus %s\n", $1);
     }
     | IDENTIFIER {
-        printf("Identifier %s\n", $1);
+        printf("Assign_Identifier %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET {
-        printf("Identifier_Array %s\n", $1);
+        printf("Assign_Identifier_Array %s\n", $1);
     }
     | /* empty */ {
-        printf("Empty \n");
+        printf("Assign_Empty \n");
     };
 
 Print:
@@ -370,16 +370,16 @@ Read:
 
 Item:
     SCONSTANT {
-        printf("Sconstant %s\n", $1); // $1 is SCONSTANT
+        printf("Item_Sconstant %s\n", $1); // $1 is SCONSTANT
     }
     | IDENTIFIER ASSIGN Item {
-        printf("Assign %s\n", $1); // $1 is the IDENTIFIER
+        printf("Item_Assign %s\n", $1); // $1 is the IDENTIFIER
     }
     | IDENTIFIER LBRACKET MathI RBRACKET ASSIGN Item {
-        printf("Assign_Array %s\n", $1); // $1 is the IDENTIFIER
+        printf("Item_Assign_Array %s\n", $1); // $1 is the IDENTIFIER
     }
     | MathI{
-        printf("Math_Equation");
+        printf("Item_Math_Equation");
     };
 
 Math:
