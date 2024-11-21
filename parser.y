@@ -335,7 +335,7 @@ SetEqualTo:
         printf("Identifier_Array %s\n", $1);
     }
     | /* empty */ {
-        printf("Empty %s\n");
+        printf("Empty \n");
     };
 
 Print:
@@ -379,12 +379,12 @@ Item:
         printf("Assign_Array %s\n", $1); // $1 is the IDENTIFIER
     }
     | MathI{
-        prinf("Math_Equation");
+        printf("Math_Equation");
     };
 
 Math:
     MathI{
-        prinf("Math_Equation");
+        printf("Math_Equation");
     }
     | /* empty */;
 MathI:
@@ -400,7 +400,7 @@ MathI2:
         printf("Multiply *\n");
     }
     | MathI2 MOD MathI3{
-        printf("Mod %\n");
+        printf("Mod \n");
     }
     | MathI2 DIVIDE MathI3{
         printf("Divide /\n");
