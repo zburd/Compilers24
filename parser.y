@@ -182,10 +182,10 @@ InsideDo:
 
 LoopParam:
     IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER DECREMENT{
-        printf("LoopParam %s--\n", $1);
+        printf("LoopParam %s --\n", $1);
     }
     | IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER INCREMENT{
-        printf("LoopParam %s++\n", $1);
+        printf("LoopParam %s ++\n", $1);
     }
     | Conditional;
 
@@ -378,10 +378,14 @@ Item:
     | IDENTIFIER LBRACKET MathI RBRACKET ASSIGN Item {
         printf("Assign_Array %s\n", $1); // $1 is the IDENTIFIER
     }
-    | MathI{};
+    | MathI{
+        prinf("Math_Equation");
+    };
 
 Math:
-    MathI
+    MathI{
+        prinf("Math_Equation");
+    }
     | /* empty */;
 MathI:
     MathI PLUS MathI2{
