@@ -15,8 +15,8 @@ program custom_example_1
         //unary ops
         arr[5] := -o;
         
-        arr[6] = o;
-        arr[7] = o;
+        arr[6] := o;
+        arr[7] := o;
         
         arr[6]++;
         arr[7]--;
