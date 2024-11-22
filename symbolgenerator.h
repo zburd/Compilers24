@@ -89,19 +89,17 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 	string cname = child -> name;
 
 
-	if ( pname == "Inside_Declare" ) { 
+	if ( pname == "Inside_Assign" ) { 
 		switch (parent -> children.size()){
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 1: 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return (cname.substr(0, 7) == "Assign_");
 			default:
 				return false;
 		}
 	}
-	else if ( pname == "Inside_Assign" ) { 
+	else if ( pname == "Inside_Declare" ) { 
 		switch (parent -> children.size()){
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
@@ -137,8 +135,26 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 		switch (parent -> children.size()){
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
-			case 1: //TODO: Add cases to structure out a function call
+			case 1:
 				return (cname == "Inside_Function_Parameters");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Func_or_Proc_Declare" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1:
+				return (cname == "Function" || cname == "Procedure");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Return_Item" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 5) == "Item_");
 			default:
 				return false;
 		}
