@@ -154,10 +154,10 @@ Inside:
         printf("Inside_Decrement_item\n"); // No valid $1 reference here
     }
     | K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
-        printf("Function \n"); // $3 is the IDENTIFIER
+        printf("Inside_Function_Declare \n"); // $3 is the IDENTIFIER
     }
     | K_PROCEDURE IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
-        printf("Procedure %s\n", $2); // $2 is the IDENTIFIER
+        printf("Inside_Procedure_Declare %s\n", $2); // $2 is the IDENTIFIER
     }
     | K_RETURN Item SEMI{
         printf("Inside_Return_Item\n"); // No valid $1 reference here
