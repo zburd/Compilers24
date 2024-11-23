@@ -166,11 +166,19 @@ Inside:
         printf("Inside_Empty\n"); // No valid $1 reference here
     };
 Declare:
-    Type SetEqualTo
-    | Type SetEqualTo COMMA Declare1;
+    Type SetEqualTo{
+        printf("Declare_One \n");
+    }
+    | Type SetEqualTo COMMA Declare1{
+        printf("Declare_Type_More \n");
+    };
 Declare1:
-    SetEqualTo
-    | SetEqualTo COMMA Declare1;//think about pritf more
+    SetEqualTo{
+        printf("Declare_Done \n");
+    }
+    | SetEqualTo COMMA Declare1{
+        printf("Declare_More \n");
+    };
 
 InsideDo:
     LCURLY Inside RCURLY{
