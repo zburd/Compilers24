@@ -296,7 +296,7 @@ Info:
         printf("Inner_Function_Parameters\n");
     }
     | Item {
-        printf("Inner_Function_Parameters\n");
+        printf("Inner_Function_Parameter\n");
     };
 
 SetEqualTo:
@@ -387,71 +387,76 @@ Item:
         printf("Item_Assign_Array %s\n", $1); // $1 is the IDENTIFIER
     }
     | MathI{
-        printf("Item_Math_Equation");
+        printf("Item_Math_Equation\n");
     };
 
 Math:
     MathI{
-        printf("Math_Equation");
+        printf("Math_Equation\n");
     }
     | /* empty */{
-        printf("Math_Empty");
+        printf("Math_Empty\n");
     };
 MathI:
     MathI PLUS MathI2{
-        printf("Plus +\n");
+        printf("MathI_Plus +\n");
     }
     | MathI MINUS MathI2{
-        printf("Minus -\n");
+        printf("MathI_Minus -\n");
     }
-    | MathI2;
+    | MathI2{
+        printf("MathI_to_I2\n");
+    }
+;
 MathI2:
     MathI2 MULTIPLY MathI3{
-        printf("Multiply *\n");
+        printf("MathI2_Multiply *\n");
     }
     | MathI2 MOD MathI3{
-        printf("Mod \n");
+        printf("MathI2_Mod mod\n");
     }
     | MathI2 DIVIDE MathI3{
-        printf("Divide /\n");
+        printf("MathI2_Divide /\n");
     }
-    | MathI3;
+    | MathI3{
+        printf("MathI2_to_I3\n");
+    };
 MathI3:
     IDENTIFIER{
-        printf("Identifier %s\n", $1);
+        printf("MathI3_Identifier %s\n", $1);
     }
     | ICONSTANT{
-        printf("Iconstant %s\n", $1);
+        printf("MathI3_Iconstant %s\n", $1);
     }
     | DCONSTANT{
-        printf("Dconstant %s\n", $1);
+        printf("MathI3_Dconstant %s\n", $1);
     }
     | IDENTIFIER INCREMENT{
-        printf("Identifier_Increment %s++\n", $1);
+        printf("MathI3_Identifier_Increment %s++\n", $1);
     }
     | IDENTIFIER DECREMENT{
-        printf("Identifier_Decrement %s--\n", $1);
+        printf("MathI3_Identifier_Decrement %s--\n", $1);
     }
     | LPAREN MathI RPAREN{
-        printf("Paren_Math \n");
+        printf("MathI3_Paren_Math \n");
     }
     | MINUS IDENTIFIER{
-        printf("Negative_Identifier -%s\n", $2);
+        printf("MathI3_Negative_Identifier -%s\n", $2);
     }
     | MINUS ICONSTANT{
-        printf("Negative_Iconstant -%s\n", $2);
+        printf("MathI3_Negative_Iconstant -%s\n", $2);
     }
     | MINUS DCONSTANT{
-        printf("Negative_Dconstant -%s\n", $2);
+        printf("MathI3_Negative_Dconstant -%s\n", $2);
     }
     | MINUS IDENTIFIER LBRACKET MathI RBRACKET{
-        printf("Negative_Array -%s\n", $2);
+        printf("MathI3_Negative_Array -%s\n", $2);
     }
     | IDENTIFIER LBRACKET MathI RBRACKET{
-        printf("Array %s\n", $1);
+        printf("MathI3_Array %s\n", $1);
     }
     | IDENTIFIER LPAREN Info RPAREN{
-        printf("Function_Call %s\n", $1);
+        printf("MathI3_Function_Call %s\n", $1);
     };
 
 %%

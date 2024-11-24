@@ -141,12 +141,31 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
-	else if ( pname == "Inside_Func_or_Proc_Declare" ) { 
+	else if ( pname == "Inside_Function_Declare" ) { 
 		switch (parent -> children.size()){
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 1:
-				return (cname == "Function" || cname == "Procedure");
+				return (cname.substr(0, 7) == "Inside_");
+			case 2:
+				return (cname == "Parameters" || cname == "Parameters_Empty");
+			case 3:  
+				return (cname == "K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Procedure_Declare" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1:
+				return (cname.substr(0, 7) == "Inside_");
+			case 2:
+				return (cname == "Parameters" || cname == "Parameters_Empty");
 			default:
 				return false;
 		}
@@ -301,11 +320,11 @@ bool isParentCondition (ParseTreeNode* parent, ParseTreeNode* child) {
 	if (pname == "Condition_Only" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname == "CondEq"); // Needs replacement with a way to get item child
+				return (cname.substr(0,5) == "Item_");
 			case 1: 
 				return (cname == "CondEq");
 			case 2: 
-				return (cname == "CondEq"); // Needs replacement with a way to get item child
+				return (cname.substr(0,5) == "Item_");
 
 			default:
 				return false;
@@ -321,7 +340,12 @@ bool isParentCondition (ParseTreeNode* parent, ParseTreeNode* child) {
 	}
 	else if (pname == "Condition_Or" || pname == "Condition_And") { 
 		switch (parent -> children.size()){
-			// First 3 cases the same as Condition_Only once fixed
+			case 0: 
+				return (cname.substr(0,5) == "Item_");
+			case 1: 
+				return (cname == "CondEq");
+			case 2: 
+				return (cname.substr(0,5) == "Item_");
 			case 3: 
 				return (cname.substr(0, 10) == "Condition_");
 			default:
@@ -358,20 +382,20 @@ bool isParentItem (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
-	if (pname== "Item_Assign_Array"){
+	else if (pname== "Item_Assign_Array"){
 		switch (parent ->children.size()){
 			case 0:
 				return (cname.substr(0,5)== "Item_");
 			case 1:
-				return (cname== "Math_Equation");
+				return (cname.substr(0,6)== "MathI_");
 			default:
 				return false;
 		}
 	}
-	if (pname== "Item_Math_Equation"){
+	else if (pname== "Item_Math_Equation"){
 		switch (parent ->children.size()){
 			case 0:
-				return (cname== "Math_Equation");
+				return (cname.substr(0,6)== "MathI_");
 			default:
 				return false;
 		}
@@ -390,20 +414,20 @@ bool isParentAssign (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
-	if (pname.substr(0,12)== "Assign_Array"){
+	else if (pname.substr(0,12)== "Assign_Array"){
 		switch (parent ->children.size()){
 			case 0:
 				return (cname.substr(0,5)== "Item_");
 			case 1:
-				return (cname== "Math_Equation");
+				return (cname.substr(0,6)== "MathI_");
 			default:
 				return false;
 		}
 	}
-	if (pname== "Assign_Identifier_Array"){
+	else if (pname== "Assign_Identifier_Array"){
 		switch (parent ->children.size()){
 			case 0:
-				return (cname== "Math_Equation");
+				return (cname.substr(0,6)== "MathI_");
 			default:
 				return false;
 		}
@@ -411,6 +435,110 @@ bool isParentAssign (ParseTreeNode* parent, ParseTreeNode* child) {
 	else { return false; }
 }
 
+bool isParentMath (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if (pname == "Math_Equation") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,6) =="MathI_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+bool isParentMathI (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+	
+	if (pname == "MathI_Plus" || pname == "MathI_Minus") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,7) =="MathI2_");
+			case 1: 
+				return (cname.substr(0,6) =="MathI_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "MathI_to_I2") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,7) =="MathI2_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+bool isParentMathI2 (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+	
+	if (pname == "MathI2_Multiply" || pname == "MathI2_Divide"|| pname == "MathI2_Mod") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,7) =="MathI3_");
+			case 1: 
+				return (cname.substr(0,7) =="MathI2_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "MathI2_to_I3") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,7) =="MathI3_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+bool isParentMathI3 (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+	
+	if (pname == "MathI3_Paren_Math") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,6) =="MathI_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "MathI3_Array" || pname == "MathI3_Negative_Array") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,6) =="MathI_");
+			default:
+				return false;
+		}
+	}
+	else if (pname == "MathI3_Function_Call") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname == "Inner_Function_Parameter" || cname == "Inner_Function_Parameters");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
 bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	// stuff for each line type
 	if (child == nullptr) {return false;}
@@ -427,7 +555,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 				return (cname.substr(0, 7) == "Inside_");
 			case 2:
 				return (cname == "Parameters" || cname == "Parameters_Empty");
-			case 3: 
+			case 3:	 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
 						cname == "K_STRING");
@@ -454,16 +582,27 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname.substr(0, 5)== "Print") { return isParentPrint(parent, child); }
 	else if (pname.substr(0, 5)== "Item_") { return isParentItem(parent, child); }
 	else if (pname.substr(0, 7)== "Assign_") { return isParentAssign(parent, child); }
+
+
+	else if (pname.substr(0, 5)== "Math_") { return isParentMath(parent, child); }
+	else if (pname.substr(0, 6)== "MathI_") { return isParentMathI(parent, child); }
+	else if (pname.substr(0, 7)== "MathI2_") { return isParentMathI2(parent, child); }
+	else if (pname.substr(0, 7)== "MathI3_") { return isParentMathI3(parent, child); }
 	
-	else if ( pname == "Inside_Function_Parameters" ) { 
+	else if ( pname == "Inner_Function_Parameters" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname == "Parameters_Empty" || cname == "Inside_Function_Parameters");
+				return (cname == "Inner_Function_Parameter" || cname == "Inner_Function_Parameters");
 			case 1:  
-				return (cname == "Iconstant" || 
-						cname == "Identifier" ||
-						cname == "Dconstant" || 
-						cname == "Sconstant");
+				return (cname.substr(0,5) == "Item_");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inner_Function_Parameter" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,5) == "Item_");
 			default:
 				return false;
 		}
@@ -539,6 +678,12 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 
 	if (!nodeStack.empty()){
 		finalTree = nodeStack.top();
+		nodeStack.pop();
+	}
+
+	// For debugging only, the stack should be empty now.
+	if (!nodeStack.empty()){
+		std::cout << "Top unpopped node after final tree is removed: " << nodeStack.top()->name << "\n";
 		nodeStack.pop();
 	}
 
