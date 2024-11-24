@@ -111,19 +111,19 @@ Parameters:
         printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
     }
     | Type IDENTIFIER LBRACKET Math RBRACKET ParametersS{
-        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
+        printf("Parameters_Array %s\n", $2); // $1 is the IDENTIFIER
     }
     | Type IDENTIFIER COMMA Parameters{
-        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
+        printf("Parameters_More %s\n", $2); // $1 is the IDENTIFIER
     }
     | Type IDENTIFIER LBRACKET Math RBRACKET COMMA Parameters{
-        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
+        printf("Parameters_More_Array %s\n", $2); // $1 is the IDENTIFIER
     }
     | ParametersS;
 ParametersS:
     /* empty */ {
         printf("Parameters_Empty\n"); // No valid $1 reference here
-    }
+    };
 
 Inside:
     Declare SEMI Inside {
@@ -199,13 +199,13 @@ LoopParam:
 
 Till:
     K_WHILE{
-        printf("While\n");
+        printf("Do_While\n");
     }
     | K_UNTIL{
-        printf("Until\n");
+        printf("Do_Until\n");
     }
     | /*empty*/ {
-        printf("For\n");
+        printf("Do_For\n");
     };
 
 InsideIf:
@@ -394,7 +394,9 @@ Math:
     MathI{
         printf("Math_Equation");
     }
-    | /* empty */;
+    | /* empty */{
+        printf("Math_Empty");
+    };
 MathI:
     MathI PLUS MathI2{
         printf("Plus +\n");
@@ -430,7 +432,9 @@ MathI3:
     | IDENTIFIER DECREMENT{
         printf("Identifier_Decrement %s--\n", $1);
     }
-    | LPAREN MathI RPAREN
+    | LPAREN MathI RPAREN{
+        printf("Paren_Math \n");
+    }
     | MINUS IDENTIFIER{
         printf("Negative_Identifier -%s\n", $2);
     }
