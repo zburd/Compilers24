@@ -104,7 +104,7 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 1: 
-				return cname == "Assign";
+				return (cname.substr(0,8) == "Declare_");
 			default:
 				return false;
 		}
@@ -114,7 +114,7 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 1: 
-				return cname == "Assign";
+				return (cname.substr(0,4)=="Read");
 			default:
 				return false;
 		}
@@ -131,12 +131,26 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
+	else if ( pname == "Inside_Do" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1:
+				return (cname == "Do_Once"||cname == "Do_More");
+			case 2:
+				return (cname == "LoopParam");
+			case 3:
+				return (cname == "Do_Until"||cname == "Do_While"||cname == "Do_For");
+			default:
+				return false;
+		}
+	}
 	else if ( pname == "Inside_Function_Call" ) { 
 		switch (parent -> children.size()){
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 1:
-				return (cname == "Inside_Function_Parameters");
+				return (cname == "Inside_Function_Parameter" || cname == "Inside_Function_Parameters");
 			default:
 				return false;
 		}
@@ -174,6 +188,14 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 		switch (parent -> children.size()){
 			case 0: 
 				return (cname.substr(0, 5) == "Item_");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Inside_Increment_item" || pname == "Inside_Decrement_item") { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
 			default:
 				return false;
 		}
@@ -254,7 +276,7 @@ bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
 	if (pname == "Once_Inside_Declare" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname.substr(0, 7) == "Inside_");
+				return (cname.substr(0, 8) == "Declare_");
 			default:
 				return false;
 		}
@@ -262,7 +284,7 @@ bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname == "Once_Inside_Assign" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname.substr(0, 7) == "Inside_");
+				return (cname.substr(0, 7) == "Assign_");
 			default:
 				return false;
 		}
@@ -270,7 +292,7 @@ bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname == "Once_Inside_Print" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname.substr(0, 7) == "Inside_");
+				return (cname.substr(0, 5) == "Print");
 			default:
 				return false;
 		}
@@ -278,7 +300,7 @@ bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname == "Once_Inside_Read" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname.substr(0, 7) == "Inside_");
+				return (cname.substr(0, 4) == "Read");
 			default:
 				return false;
 		}
@@ -286,19 +308,19 @@ bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname == "Once_Inside_Function_Call" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname.substr(0, 7) == "Inside_");
+				return (cname == "Inner_Function_Parameter" || cname == "Inner_Function_Parameters");
 			default:
 				return false;
 		}
 	}
-	else if (pname == "Once_Inside_Do" ) { 
+	else if ( pname == "Once_Inside_Do" ) { 
 		switch (parent -> children.size()){
-			case 0: 
-				return (cname.substr(0, 7) == "Inside_");
-			case 1: 
-				return (cname.substr(0, 7) == "Inside_");
-			case 2: 
-				return (cname.substr(0, 7) == "Inside_");
+			case 0:
+				return (cname == "Do_Once"||cname == "Do_More");
+			case 1:
+				return (cname == "LoopParam");
+			case 2:
+				return (cname == "Do_Until"||cname == "Do_While"||cname == "Do_For");
 			default:
 				return false;
 		}
@@ -306,7 +328,7 @@ bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname == "Once_Return_Item" ) { 
 		switch (parent -> children.size()){
 			case 0: 
-				return (cname.substr(0, 7) == "Inside_");
+				return (cname.substr(0, 5) == "Item_");
 			default:
 				return false;
 		}
@@ -539,6 +561,149 @@ bool isParentMathI3 (ParseTreeNode* parent, ParseTreeNode* child) {
 	}
 	else { return false; }
 }
+
+bool isParentDo (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if ( pname == "Do_Once" ){
+		switch (parent -> children.size()){
+			case 0:
+				return cname.substr(0,5)=="Once_";
+			default:
+				return false;
+		}
+	}
+	else if (pname=="Do_More"){
+		switch (parent -> children.size()){
+			case 0:
+				return cname.substr(0,7)=="Inside_";
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+
+}
+bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+
+
+	if ( pname == "Declare_One" ){
+		switch (parent -> children.size()){
+			case 0:
+				return cname.substr(0,7)=="Assign_";
+			case 1:
+				return (cname =="K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Declare_Done" ){
+		switch (parent -> children.size()){
+			case 0:
+				return cname.substr(0,7)=="Assign_";
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Declare_More" ){
+		switch (parent -> children.size()){
+			case 0:
+				return cname.substr(0,7)=="Assign_";
+			case 1:
+				return (cname=="Declare_More" || cname=="Declare_Done");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Declare_Type_More" ){
+		switch (parent -> children.size()){
+			case 0:
+				return cname.substr(0,7)=="Assign_";
+			case 1:
+				return (cname=="Declare_More" || cname=="Declare_Done");
+			case 2: 
+				return (cname =="K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else { return false;}
+}
+bool isParentParameters (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if ( pname == "Parameters_More" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,10) == "Parameters");
+			case 1: 
+				return (cname == "K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Parameters" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname == "Parameters_Empty");
+			case 1: 
+				return (cname == "K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Parameters_More_Array" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,10) == "Parameters");
+			case 1: 
+				return (cname.substr(0,5) == "Math_");
+			case 2: 
+				return (cname == "K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Parameters_Array" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname == "Parameters_Empty");
+			case 1: 
+				return (cname.substr(0,5) == "Math_");
+			case 2: 
+				return (cname == "K_INTEGER" || 
+						cname == "K_DOUBLE" || 
+						cname == "K_STRING");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
+
 bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	// stuff for each line type
 	if (child == nullptr) {return false;}
@@ -554,7 +719,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 2:
-				return (cname == "Parameters" || cname == "Parameters_Empty");
+				return (cname.substr(0,10) == "Parameters");
 			case 3:	 
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
@@ -570,7 +735,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 2:
-				return (cname == "Parameters" || cname == "Parameters_Empty");
+				return (cname.substr(0,10) == "Parameters");
 			default:
 				return false;
 		}
@@ -583,12 +748,20 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname.substr(0, 5)== "Item_") { return isParentItem(parent, child); }
 	else if (pname.substr(0, 7)== "Assign_") { return isParentAssign(parent, child); }
 
-
 	else if (pname.substr(0, 5)== "Math_") { return isParentMath(parent, child); }
 	else if (pname.substr(0, 6)== "MathI_") { return isParentMathI(parent, child); }
 	else if (pname.substr(0, 7)== "MathI2_") { return isParentMathI2(parent, child); }
 	else if (pname.substr(0, 7)== "MathI3_") { return isParentMathI3(parent, child); }
 	
+
+	else if (pname.substr(0, 3)== "Do_") { return isParentDo(parent, child); }
+
+	else if (pname.substr(0, 8)== "Declare_") { return isParentDeclare(parent, child); }
+	else if (pname.substr(0, 10)== "Parameters") { return isParentParameters(parent, child); }
+
+
+
+
 	else if ( pname == "Inner_Function_Parameters" ) { 
 		switch (parent -> children.size()){
 			case 0: 
@@ -603,34 +776,6 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 		switch (parent -> children.size()){
 			case 0: 
 				return (cname.substr(0,5) == "Item_");
-			default:
-				return false;
-		}
-	}
-
-
-	else if ( pname == "Assign" ) { 
-		switch (parent -> children.size()){
-			case 0: 
-				return (cname == "Iconstant" || 
-						cname == "Identifier" ||
-						cname == "Dconstant" || 
-						cname == "Sconstant" ||
-						cname == "Inside_Function_Call");
-
-			default:
-				return false;
-		}
-	}
-	
-	else if ( pname == "Parameters" ) { 
-		switch (parent -> children.size()){
-			case 0: 
-				return (cname == "Parameters_Empty" || cname == "Parameters");
-			case 1: 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
 			default:
 				return false;
 		}
@@ -684,6 +829,7 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 	// For debugging only, the stack should be empty now.
 	if (!nodeStack.empty()){
 		std::cout << "Top unpopped node after final tree is removed: " << nodeStack.top()->name << "\n";
+		std::cout << "Stack size remaining:                        : " << nodeStack.size() << "\n";
 		nodeStack.pop();
 	}
 
