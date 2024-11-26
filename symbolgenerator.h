@@ -131,6 +131,18 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
+	else if ( pname == "Inside_If" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0, 7) == "Inside_");
+			case 1:
+				return (cname.substr(0, 3) == "If_");
+			case 2:
+				return (cname.substr(0, 10) == "Condition_");
+			default:
+				return false;
+		}
+	}
 	else if ( pname == "Inside_Do" ) { 
 		switch (parent -> children.size()){
 			case 0: 
@@ -138,7 +150,7 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1:
 				return (cname == "Do_Once"||cname == "Do_More");
 			case 2:
-				return (cname == "LoopParam");
+				return (cname == "LoopParam" || cname == "LoopParam_Conditional");
 			case 3:
 				return (cname == "Do_Until"||cname == "Do_While"||cname == "Do_For");
 			default:
@@ -162,7 +174,7 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1:
 				return (cname.substr(0, 7) == "Inside_");
 			case 2:
-				return (cname == "Parameters" || cname == "Parameters_Empty");
+				return (cname.substr(0,10) == "Parameters");
 			case 3:  
 				return (cname == "K_INTEGER" || 
 						cname == "K_DOUBLE" || 
@@ -179,7 +191,7 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1:
 				return (cname.substr(0, 7) == "Inside_");
 			case 2:
-				return (cname == "Parameters" || cname == "Parameters_Empty");
+				return (cname.substr(0,10) == "Parameters");
 			default:
 				return false;
 		}
@@ -318,7 +330,7 @@ bool isParentOnce (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0:
 				return (cname == "Do_Once"||cname == "Do_More");
 			case 1:
-				return (cname == "LoopParam");
+				return (cname == "LoopParam" || cname == "LoopParam_Conditional");
 			case 2:
 				return (cname == "Do_Until"||cname == "Do_While"||cname == "Do_For");
 			default:
@@ -441,7 +453,7 @@ bool isParentAssign (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0:
 				return (cname.substr(0,5)== "Item_");
 			case 1:
-				return (cname.substr(0,6)== "MathI_");
+				return (cname.substr(0,5)== "Math_");
 			default:
 				return false;
 		}
@@ -449,7 +461,7 @@ bool isParentAssign (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname== "Assign_Identifier_Array"){
 		switch (parent ->children.size()){
 			case 0:
-				return (cname.substr(0,6)== "MathI_");
+				return (cname.substr(0,5)== "Math_");
 			default:
 				return false;
 		}
@@ -703,6 +715,33 @@ bool isParentParameters (ParseTreeNode* parent, ParseTreeNode* child) {
 	}
 	else { return false; }
 }
+bool isParentLoopParam (ParseTreeNode* parent, ParseTreeNode* child) {
+	// stuff for each line type
+	if (child == nullptr) {return false;}
+
+	string pname = parent -> name;
+	string cname = child -> name;
+
+	if ( pname == "LoopParam" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,10) == "Condition_");
+			case 1:
+				return (cname.substr(0,6) == "MathI_");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "LoopParam_Conditional" ) { 
+		switch (parent -> children.size()){
+			case 0: 
+				return (cname.substr(0,10) == "Condition_");
+			default:
+				return false;
+		}
+	}
+	else { return false; }
+}
 
 bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	// stuff for each line type
@@ -711,9 +750,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	string pname = parent -> name;
 	string cname = child -> name;
 
-	if (cname == "Inner_Function_Parameter" || cname == "Inner_Function_Parameters") {
-		std::cout << pname << " checked with " << cname << "\n";
-	}
+	if (cname == "Condition_Only") {std::cout << pname << " checked with " << cname << "\n";}
 
 
 	if ( pname == "Program" && parent->children.size() == 0) { return cname == "Function" || cname == "Procedure"; }
@@ -762,8 +799,9 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else if (pname.substr(0, 3)== "Do_") { return isParentDo(parent, child); }
 
 	else if (pname.substr(0, 8)== "Declare_") { return isParentDeclare(parent, child); }
-	else if (pname.substr(0, 10)== "Parameters") { return isParentParameters(parent, child); }
 
+	else if (pname.substr(0, 10)== "Parameters") { return isParentParameters(parent, child); }
+	else if (pname.substr(0, 9)== "LoopParam") { return isParentLoopParam(parent, child); }
 
 
 
