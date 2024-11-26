@@ -150,7 +150,7 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname.substr(0, 7) == "Inside_");
 			case 1:
-				return (cname == "Inside_Function_Parameter" || cname == "Inside_Function_Parameters");
+				return (cname == "Inner_Function_Parameter" || cname == "Inner_Function_Parameters");
 			default:
 				return false;
 		}
