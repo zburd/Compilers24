@@ -195,7 +195,9 @@ LoopParam:
     | IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER INCREMENT{
         printf("LoopParam %s ++\n", $1);
     }
-    | Conditional;
+    | Conditional{
+        printf("LoopParam_Conditional\n");
+    };
 
 Till:
     K_WHILE{
