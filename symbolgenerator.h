@@ -83,6 +83,10 @@ class ParseTreeNode {
        
 };
 
+bool isTypeKeyword (string cname) {
+	return (cname == "K_INTEGER" || cname == "K_DOUBLE" || cname == "K_STRING");
+}
+
 bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 	// This function handles all the "Inside_" parse tree functions to clean up the code.
 	string pname = parent -> name;
@@ -176,10 +180,7 @@ bool isParentInside (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 2:
 				return (cname.substr(0,10) == "Parameters");
 			case 3:  
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
-
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
@@ -613,9 +614,7 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0:
 				return cname.substr(0,7)=="Assign_";
 			case 1:
-				return (cname =="K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
@@ -645,9 +644,7 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1:
 				return (cname=="Declare_More" || cname=="Declare_Done");
 			case 2: 
-				return (cname =="K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
@@ -666,9 +663,7 @@ bool isParentParameters (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname.substr(0,10) == "Parameters");
 			case 1: 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
@@ -678,9 +673,7 @@ bool isParentParameters (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0: 
 				return (cname == "Parameters_Empty");
 			case 1: 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
@@ -692,9 +685,7 @@ bool isParentParameters (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1: 
 				return (cname.substr(0,5) == "Math_");
 			case 2: 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
@@ -706,9 +697,7 @@ bool isParentParameters (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 1: 
 				return (cname.substr(0,5) == "Math_");
 			case 2: 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
@@ -763,9 +752,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 2:
 				return (cname.substr(0,10) == "Parameters");
 			case 3:	 
-				return (cname == "K_INTEGER" || 
-						cname == "K_DOUBLE" || 
-						cname == "K_STRING");
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
