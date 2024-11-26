@@ -711,6 +711,11 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	string pname = parent -> name;
 	string cname = child -> name;
 
+	if (cname == "Inner_Function_Parameter" || cname == "Inner_Function_Parameters") {
+		std::cout << pname << " checked with " << cname << "\n";
+	}
+
+
 	if ( pname == "Program" && parent->children.size() == 0) { return cname == "Function" || cname == "Procedure"; }
 	else if ( pname == "Function" ) { 
 		switch (parent -> children.size()){
@@ -814,7 +819,7 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 				// If the node on the stack is a child of the new node,
 				// it is added to the new node and then popped
 				newNode -> addChild(nodeStack.top());
-				std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
+				//std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
 				nodeStack.pop();
 			} else {break;}
 		}
