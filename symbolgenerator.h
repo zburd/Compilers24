@@ -739,7 +739,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	string pname = parent -> name;
 	string cname = child -> name;
 
-	if (cname == "Condition_Only") {std::cout << pname << " checked with " << cname << "\n";}
+	//if (cname == "Condition_Only") {std::cout << pname << " checked with " << cname << "\n";}
 
 
 	if ( pname == "Program" && parent->children.size() == 0) { return cname == "Function" || cname == "Procedure"; }
@@ -846,7 +846,9 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 				newNode -> addChild(nodeStack.top());
 				//std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
 				nodeStack.pop();
-			} else {break;}
+			} else {
+				break;
+			}
 		}
 		nodeStack.push(newNode);
 	}
@@ -858,10 +860,14 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 
 	// For debugging only, the stack should be empty now.
 	if (!nodeStack.empty()){
-		std::cout << "Top unpopped node after final tree is removed: " << nodeStack.top()->name << "\n";
 		std::cout << "Stack size remaining:                        : " << nodeStack.size() << "\n";
-		nodeStack.pop();
+		while (!nodeStack.empty()){
+			std::cout  << nodeStack.top()->name << "\n";
+			nodeStack.pop();
+		}
 	}
+
+
 
 	// Closes the file
 	file.close();
