@@ -23,6 +23,9 @@ class ParseTreeNode {
         
 		string data; //Data is stored as string, can be converted later
 
+        //debug thing
+        int originalline;
+
 		// Constructor and destructor. 
 		ParseTreeNode (string name, string data = "")
 			: name(name), data(data), parent(nullptr) {
@@ -828,16 +831,18 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 		std::cerr << "Could not open file: " << filename << "\n";
 		return nullptr;
 	}
-
+    int linecount = 0;
 	// Reads in the file, pushes each line as a node on the stack
 	while (std::getline(file, line)) {
-
+        linecount++;
+        
+        
 		// make a new node for the data in the line
 		ParseTreeNode* newNode = nullptr;
 		int pos = line.find(" ");
 		if (pos == -1) {newNode = new ParseTreeNode(line);}
 		else { newNode = new ParseTreeNode(line.substr(0,pos),line.substr(pos+1)); }
-			
+		newNode->originalline = linecount;
 
 		while (!nodeStack.empty()){
 			if (isParent(newNode, nodeStack.top())){
@@ -862,7 +867,7 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 	if (!nodeStack.empty()){
 		std::cout << "Stack size remaining:                        : " << nodeStack.size() << "\n";
 		while (!nodeStack.empty()){
-			std::cout  << nodeStack.top()->name << "\n";
+			std::cout  << nodeStack.top()->name << " contents: " << nodeStack.top()->data << " from line " << nodeStack.top()->originalline << "\n";
 			nodeStack.pop();
 		}
 	}
