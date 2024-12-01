@@ -29,9 +29,9 @@ class ParseTreeNode {
 		// Constructor and destructor. 
 		ParseTreeNode (string name, string data = "")
 			: name(name), data(data), parent(nullptr) {
-				if (name == "Iconstant") { dtype=0;}
-				else if (name == "Dconstant") { dtype=1;}
-				else if (name == "Sconstant") { dtype=2;}
+				if (name == "Iconstant" || name == "MathI3_Iconstant" || name == "MathI3_Negative_Iconstant" ) { dtype=0;}
+				else if (name == "Dconstant" || name == "MathI3_Dconstant" || name == "MathI3_Negative_Dconstant" ) { dtype=1;}
+				else if (name == "Sconstant" || name == "Item_Sconstant" ) { dtype=2;}
 				else if (name == "Function" || name == "Procedure") {dtype=3;}
 				else {dtype = -1;}
 		}
@@ -858,7 +858,7 @@ ParseTreeNode* buildParseTreeFromFile (string filename) {
 		nodeStack.push(newNode);
 	}
 
-	if (!nodeStack.empty()){
+	if (!nodeStack.empty()){ //at this point the nodestack should only have the program element on it.
 		finalTree = nodeStack.top();
 		nodeStack.pop();
 	}
