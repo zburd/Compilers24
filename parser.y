@@ -171,13 +171,26 @@ Declare:
     }
     | Type SetEqualTo COMMA Declare1{
         printf("Declare_Type_More \n");
+    }
+    | Type IDENTIFIER {
+        printf("Declare_One_U \n");
+    }
+    | Type IDENTIFIER COMMA Declare1 {
+        printf("Declare_Type_More_U \n");
     };
+
 Declare1:
     SetEqualTo{
         printf("Declare_Done \n");
     }
+    | IDENTIFIER {
+       printf("Declare_Done_U \n");
+    }
     | SetEqualTo COMMA Declare1{
         printf("Declare_More \n");
+    }
+    | IDENTIFIER COMMA Declare1{
+       printf("Declare_More_U \n");
     };
 
 InsideDo:
@@ -337,9 +350,6 @@ SetEqualTo:
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_PLUS Item {
         printf("Assign_Array_Plus %s\n", $1);
-    }
-    | IDENTIFIER {
-        printf("Assign_Identifier %s\n", $1);
     }
     | IDENTIFIER LBRACKET Math RBRACKET {
         printf("Assign_Identifier_Array %s\n", $1);
