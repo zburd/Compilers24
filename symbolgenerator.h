@@ -622,6 +622,14 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 				return false;
 		}
 	}
+	else if ( pname == "Declare_One_U" ){
+		switch (parent -> children.size()){
+			case 0:
+				return isTypeKeyword(cname);
+			default:
+				return false;
+		}
+	}
 	else if ( pname == "Declare_Done" ){
 		switch (parent -> children.size()){
 			case 0:
@@ -635,7 +643,7 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0:
 				return cname.substr(0,7)=="Assign_";
 			case 1:
-				return (cname=="Declare_More" || cname=="Declare_Done");
+				return (cname=="Declare_More" || cname=="Declare_Done" || cname=="Declare_More_U" || cname=="Declare_Done_U");
 			default:
 				return false;
 		}
@@ -645,8 +653,26 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 			case 0:
 				return cname.substr(0,7)=="Assign_";
 			case 1:
-				return (cname=="Declare_More" || cname=="Declare_Done");
+				return (cname=="Declare_More" || cname=="Declare_Done" || cname=="Declare_More_U" || cname=="Declare_Done_U");
 			case 2: 
+				return isTypeKeyword(cname);
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Declare_More_U" ){
+		switch (parent -> children.size()){
+			case 0:
+				return (cname=="Declare_More" || cname=="Declare_Done" || cname=="Declare_More_U" || cname=="Declare_Done_U");
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Declare_Type_More_U" ){
+		switch (parent -> children.size()){
+			case 0:
+				return (cname=="Declare_More" || cname=="Declare_Done" || cname=="Declare_More_U" || cname=="Declare_Done_U");
+			case 1: 
 				return isTypeKeyword(cname);
 			default:
 				return false;
