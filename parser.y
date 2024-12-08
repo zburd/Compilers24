@@ -129,7 +129,7 @@ Inside:
         printf("Inside_Declare\n"); // $2 is the IDENTIFIER
     }
     | SetEqualTo SEMI Inside {
-        printf("Inside_Assign %s\n", $1); // This has to be updated based on actual items
+        printf("Inside_Assign\n"); // This has to be updated based on actual items
     }
     | Print SEMI Inside {
         printf("Inside_Print\n"); // Print has no applicable items
@@ -147,13 +147,13 @@ Inside:
         printf("Inside_Do\n"); // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI Inside{
-        printf("Inside_Increment_item\n"); // No valid $1 reference here
+        printf("Inside_Increment_item %s\n", $1); // No valid $1 reference here
     }
     | IDENTIFIER DECREMENT SEMI Inside{
-        printf("Inside_Decrement_item\n"); // No valid $1 reference here
+        printf("Inside_Decrement_item %s\n", $1); // No valid $1 reference here
     }
     | K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
-        printf("Inside_Function_Declare\n"); // $3 is the IDENTIFIER
+        printf("Inside_Function_Declare %s\n", $3); // $3 is the IDENTIFIER
     }
     | K_PROCEDURE IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
         printf("Inside_Procedure_Declare %s\n", $2); // $2 is the IDENTIFIER
