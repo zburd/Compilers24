@@ -87,8 +87,7 @@ void yyerror(const char *s) {
 Program:
     K_PROGRAM IDENTIFIER LCURLY Function RCURLY {
         printf("Program %s\n", $2); // $2 is the IDENTIFIER
-    }
-;
+    };
 
 Function:
     K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
@@ -127,7 +126,7 @@ ParametersS:
 
 Inside:
     Declare SEMI Inside {
-        printf("Inside_Declare \n"); // $2 is the IDENTIFIER
+        printf("Inside_Declare\n"); // $2 is the IDENTIFIER
     }
     | SetEqualTo SEMI Inside {
         printf("Inside_Assign %s\n", $1); // This has to be updated based on actual items
@@ -142,10 +141,10 @@ Inside:
         printf("Inside_Function_Call %s\n", $1); // function calls made inside other functions
     }
     | K_IF LPAREN Conditional RPAREN K_THEN InsideIf Inside{
-        printf("Inside_If \n"); // function calls made inside other functions
+        printf("Inside_If\n"); // function calls made inside other functions
     }
     | K_DO Till LPAREN LoopParam RPAREN InsideDo Inside{
-        printf("Inside_Do \n"); // function calls made inside other functions
+        printf("Inside_Do\n"); // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI Inside{
         printf("Inside_Increment_item\n"); // No valid $1 reference here
@@ -154,7 +153,7 @@ Inside:
         printf("Inside_Decrement_item\n"); // No valid $1 reference here
     }
     | K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
-        printf("Inside_Function_Declare \n"); // $3 is the IDENTIFIER
+        printf("Inside_Function_Declare\n"); // $3 is the IDENTIFIER
     }
     | K_PROCEDURE IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
         printf("Inside_Procedure_Declare %s\n", $2); // $2 is the IDENTIFIER
@@ -167,30 +166,30 @@ Inside:
     };
 Declare:
     Type SetEqualTo{
-        printf("Declare_One \n");
+        printf("Declare_One\n");
     }
     | Type SetEqualTo COMMA Declare1{
-        printf("Declare_Type_More \n");
+        printf("Declare_Type_More\n");
     }
     | Type IDENTIFIER {
-        printf("Declare_One_U \n");
+        printf("Declare_One_U %s\n", $2);
     }
     | Type IDENTIFIER COMMA Declare1 {
-        printf("Declare_Type_More_U \n");
+        printf("Declare_Type_More_U %s\n", $2);
     };
 
 Declare1:
     SetEqualTo{
-        printf("Declare_Done \n");
+        printf("Declare_Done\n");
     }
     | IDENTIFIER {
-       printf("Declare_Done_U \n");
+       printf("Declare_Done_U %s\n", $1);
     }
     | SetEqualTo COMMA Declare1{
-        printf("Declare_More \n");
+        printf("Declare_More\n");
     }
     | IDENTIFIER COMMA Declare1{
-       printf("Declare_More_U \n");
+       printf("Declare_More_U %s\n", $1);
     };
 
 InsideDo:
@@ -244,7 +243,7 @@ InsideIf:
     };
 Once:
     Declare SEMI {
-        printf("Once_Inside_Declare \n"); // $2 is the IDENTIFIER
+        printf("Once_Inside_Declare\n"); // $2 is the IDENTIFIER
     }
     | SetEqualTo SEMI {
         printf("Once_Inside_Assign %s\n", $1); // This has to be updated based on actual items
@@ -259,7 +258,7 @@ Once:
         printf("Once_Inside_Function_Call %s\n", $1); // function calls made inside other functions
     }
     | K_DO Till LPAREN LoopParam RPAREN InsideDo {
-        printf("Once_Inside_Do \n"); // function calls made inside other functions
+        printf("Once_Inside_Do\n"); // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI {
         printf("Once_Increment_item %s\n", $1); // Identifier stored in data
@@ -355,7 +354,7 @@ SetEqualTo:
         printf("Assign_Identifier_Array %s\n", $1);
     }
     | /* empty */ {
-        printf("Assign_Empty \n");
+        printf("Assign_Empty\n");
     };
 
 Print:
@@ -418,8 +417,7 @@ MathI:
     }
     | MathI2{
         printf("MathI_to_I2\n");
-    }
-;
+    };
 MathI2:
     MathI2 MULTIPLY MathI3{
         printf("MathI2_Multiply *\n");
@@ -450,7 +448,7 @@ MathI3:
         printf("MathI3_Identifier_Decrement %s--\n", $1);
     }
     | LPAREN MathI RPAREN{
-        printf("MathI3_Paren_Math \n");
+        printf("MathI3_Paren_Math\n");
     }
     | MINUS IDENTIFIER{
         printf("MathI3_Negative_Identifier -%s\n", $2);
