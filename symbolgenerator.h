@@ -634,15 +634,17 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 		switch (parent -> children.size()){
 			case 0:
 				return cname.substr(0,7)=="Assign_";
+			case 1:
+				return isTypeKeyword(cname);
 			default:
 				return false;
 		}
 	}
 	else if ( pname == "Declare_More" ){
 		switch (parent -> children.size()){
-			case 0:
-				return cname.substr(0,7)=="Assign_";
 			case 1:
+				return cname.substr(0,7)=="Assign_";
+			case 0:
 				return (cname=="Declare_More" || cname=="Declare_Done" || cname=="Declare_More_U" || cname=="Declare_Done_U");
 			default:
 				return false;
@@ -650,11 +652,19 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 	}
 	else if ( pname == "Declare_Type_More" ){
 		switch (parent -> children.size()){
-			case 0:
-				return cname.substr(0,7)=="Assign_";
 			case 1:
+				return cname.substr(0,7)=="Assign_";
+			case 0:
 				return (cname=="Declare_More" || cname=="Declare_Done" || cname=="Declare_More_U" || cname=="Declare_Done_U");
-			case 2: 
+			case 2:
+				return isTypeKeyword(cname);
+			default:
+				return false;
+		}
+	}
+	else if ( pname == "Declare_Done_U" ){
+		switch (parent -> children.size()){
+			case 0:
 				return isTypeKeyword(cname);
 			default:
 				return false;
@@ -672,7 +682,7 @@ bool isParentDeclare (ParseTreeNode* parent, ParseTreeNode* child) {
 		switch (parent -> children.size()){
 			case 0:
 				return (cname=="Declare_More" || cname=="Declare_Done" || cname=="Declare_More_U" || cname=="Declare_Done_U");
-			case 1: 
+			case 1:
 				return isTypeKeyword(cname);
 			default:
 				return false;
@@ -911,7 +921,7 @@ void printParseTree(ParseTreeNode* tree, int depth = 0) {
     }
 
     // Print the current node with indentation based on depth
-    cout << string(depth * 4, ' ') // Indentation (4 spaces per depth level)
+    cout << string(depth * 1, ' ') // Indentation (4 spaces per depth level)
          << "Node: " << tree->name 
          << ", Data: " << tree->data 
 	 << ", dtype: " << tree->dtype << std::endl;
