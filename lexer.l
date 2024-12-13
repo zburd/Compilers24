@@ -4,8 +4,6 @@
 #include "parser.tab.h"
 
 
-
-
 %}
 K_DO               "do"
 K_DOUBLE           "double"

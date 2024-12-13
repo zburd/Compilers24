@@ -2,11 +2,16 @@
 #include<stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
 enum ParseTreeNodeTypes {PROGRAM, FUNCTION, TYPE, INSIDE, SETEQUALTO, PRINT, ITEM};
+
 
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
+
+using std::endl;
+using std::cout;
 void yyerror(const char *s) {
    fprintf (stderr, "%s", s);
 }
@@ -86,393 +91,390 @@ void yyerror(const char *s) {
 
 Program:
     K_PROGRAM IDENTIFIER LCURLY Function RCURLY {
-        printf("Program %s\n", $2); // $2 is the IDENTIFIER
+        cout << "Program " << $2 << endl; // $2 is the IDENTIFIER
+
     };
 
 Function:
     K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
-        printf("Function %s\n", $3); // $3 is the IDENTIFIER
+        cout << "Function " << $3 << endl; // $3 is the IDENTIFIER
     }
     | K_PROCEDURE IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Function{
-        printf("Procedure %s\n", $2); // $2 is the IDENTIFIER
+        cout << "Procedure " << $2 << endl; // $2 is the IDENTIFIER
     }
     | /* empty */ {
-        printf("Function_Empty\n"); // No valid $1 reference here
+        cout << "Function_Empty\n"; // No valid $1 reference here
     };
 
 Type:
-    K_INTEGER { printf("K_INTEGER\n"); }
-    | K_DOUBLE { printf("K_DOUBLE\n"); }
-    | K_STRING { printf("K_STRING\n"); };
-
+    K_INTEGER { cout << "K_INTEGER\n"; }
+    | K_DOUBLE { cout << "K_DOUBLE\n"; }
+    | K_STRING { cout << "K_STRING\n"; }
+    ;
 Parameters:
     Type IDENTIFIER ParametersS{
-        printf("Parameters %s\n", $2); // $1 is the IDENTIFIER
+        cout << "Parameters " << $2 << endl; // $1 is the IDENTIFIER
     }
     | Type IDENTIFIER LBRACKET Math RBRACKET ParametersS{
-        printf("Parameters_Array %s\n", $2); // $1 is the IDENTIFIER
+        cout << "Parameters_Array " << $2 << endl; // $1 is the IDENTIFIER
     }
     | Type IDENTIFIER COMMA Parameters{
-        printf("Parameters_More %s\n", $2); // $1 is the IDENTIFIER
+        cout << "Parameters_More " << $2 << endl; // $1 is the IDENTIFIER
     }
     | Type IDENTIFIER LBRACKET Math RBRACKET COMMA Parameters{
-        printf("Parameters_More_Array %s\n", $2); // $1 is the IDENTIFIER
+        cout << "Parameters_More_Array " << $2 << endl; // $1 is the IDENTIFIER
     }
     | ParametersS;
 ParametersS:
     /* empty */ {
-        printf("Parameters_Empty\n"); // No valid $1 reference here
+        cout << "Parameters_Empty\n"; // No valid $1 reference here
     };
 
 Inside:
     Declare SEMI Inside {
-        printf("Inside_Declare\n"); // $2 is the IDENTIFIER
+        cout << "Inside_Declare\n"; // $2 is the IDENTIFIER
     }
     | SetEqualTo SEMI Inside {
-        printf("Inside_Assign\n"); // This has to be updated based on actual items
+        cout << "Inside_Assign\n"; // This has to be updated based on actual items
     }
     | Print SEMI Inside {
-        printf("Inside_Print\n"); // Print has no applicable items
+        cout << "Inside_Print\n"; // Print has no applicable items
     }
     | Read SEMI Inside {
-        printf("Inside_Read\n"); // Print has no applicable items
+        cout << "Inside_Read\n"; // Print has no applicable items
     }
     | IDENTIFIER LPAREN Info RPAREN SEMI Inside{
-        printf("Inside_Function_Call %s\n", $1); // function calls made inside other functions
+        cout << "Inside_Function_Call " << $1 << endl; // function calls made inside other functions
     }
     | K_IF LPAREN Conditional RPAREN K_THEN InsideIf Inside{
-        printf("Inside_If\n"); // function calls made inside other functions
+        cout << "Inside_If\n"; // function calls made inside other functions
     }
     | K_DO Till LPAREN LoopParam RPAREN InsideDo Inside{
-        printf("Inside_Do\n"); // function calls made inside other functions
+        cout << "Inside_Do\n"; // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI Inside{
-        printf("Inside_Increment_item %s\n", $1); // No valid $1 reference here
+        cout << "Inside_Increment_item " << $1 << endl;
     }
     | IDENTIFIER DECREMENT SEMI Inside{
-        printf("Inside_Decrement_item %s\n", $1); // No valid $1 reference here
+        cout << "Inside_Decrement_item " << $1 << endl; // No valid $1 reference here
     }
     | K_FUNCTION Type IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
-        printf("Inside_Function_Declare %s\n", $3); // $3 is the IDENTIFIER
+        cout << "Inside_Function_Declare " << $3 << endl; // $3 is the IDENTIFIER
     }
     | K_PROCEDURE IDENTIFIER LPAREN Parameters RPAREN LCURLY Inside RCURLY Inside{
-        printf("Inside_Procedure_Declare %s\n", $2); // $2 is the IDENTIFIER
+        cout << "Inside_Procedure_Declare " << $2 << endl; // $2 is the IDENTIFIER
     }
     | K_RETURN Item SEMI{
-        printf("Inside_Return_Item\n"); // No valid $1 reference here
+        cout << "Inside_Return_Item\n"; // No valid $1 reference here
     }
     | /* empty */ {
-        printf("Inside_Empty\n"); // No valid $1 reference here
+       cout << "Inside_Empty\n"; // No valid $1 reference here
     };
 Declare:
     Type SetEqualTo{
-        printf("Declare_One\n");
+        cout << "Declare_One\n";
     }
     | Type SetEqualTo COMMA Declare1{
-        printf("Declare_Type_More\n");
+        cout << "Declare_Type_More\n";
     }
     | Type IDENTIFIER {
-        printf("Declare_One_U %s\n", $2);
+        cout << "Declare_One_U " << $2 << endl;
     }
     | Type IDENTIFIER COMMA Declare1 {
-        printf("Declare_Type_More_U %s\n", $2);
+        cout << "Declare_Type_More_U " << $2 << endl;
     };
 
 Declare1:
     SetEqualTo{
-        printf("Declare_Done\n");
+        cout << "Declare_Done\n";
     }
     | IDENTIFIER {
-       printf("Declare_Done_U %s\n", $1);
+       cout << "Declare_Done_U " << $1 << endl;
     }
     | SetEqualTo COMMA Declare1{
-        printf("Declare_More\n");
+        cout << "Declare_More\n";
     }
     | IDENTIFIER COMMA Declare1{
-       printf("Declare_More_U %s\n", $1);
+       cout << "Declare_More_U " << $1 << endl;
     };
 
 InsideDo:
     LCURLY Inside RCURLY{
-        printf("Do_More\n");
+        cout << "Do_More\n";
     }
     | Once{
-        printf("Do_Once\n");
+        cout << "Do_Once\n";
     };
 
 LoopParam:
     IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER DECREMENT{
-        printf("LoopParam %s --\n", $1);
+        cout << "LoopParam " << $1 << "--\n";
     }
     | IDENTIFIER ASSIGN MathI SEMI Conditional SEMI IDENTIFIER INCREMENT{
-        printf("LoopParam %s ++\n", $1);
+        cout << "LoopParam " << $1 << "++\n";
     }
     | Conditional{
-        printf("LoopParam_Conditional\n");
+        cout << "LoopParam_Conditional\n";
     };
 
 Till:
     K_WHILE{
-        printf("Do_While\n");
+        cout << "Do_While\n";
     }
     | K_UNTIL{
-        printf("Do_Until\n");
+        cout << "Do_Until\n";
     }
     | /*empty*/ {
-        printf("Do_For\n");
+        cout << "Do_For\n";
     };
 
 InsideIf:
     LCURLY Inside RCURLY K_ELSE{
-        printf("If_More_Else\n");
+        cout << "If_More_Else\n";
     }
     | LCURLY Inside RCURLY K_ELSE LCURLY Inside RCURLY{
-        printf("If_More_Else_More\n");
+        cout << "If_More_Else_More\n";
     }
     | LCURLY Inside RCURLY{
-        printf("If_More\n");
+        cout << "If_More\n";
     }
     | Once K_ELSE LCURLY Inside RCURLY{
-        printf("If_Once_Else_More\n");
+        cout << "If_Once_Else_More\n";
     }
     | Once K_ELSE{
-        printf("If_Once_Else\n");
+        cout << "If_Once_Else\n";
     }
     | Once{
-        printf("If_Once\n");
+        cout << "If_Once\n";
     };
 Once:
     Declare SEMI {
-        printf("Once_Inside_Declare\n"); // $2 is the IDENTIFIER
+        cout << "Once_Inside_Declare\n"; // $2 is the IDENTIFIER
     }
     | SetEqualTo SEMI {
-        printf("Once_Inside_Assign %s\n", $1); // This has to be updated based on actual items
+        cout << "Once_Inside_Assign " << $1 << endl; // This has to be updated based on actual items
     }
     | Print SEMI {
-        printf("Once_Inside_Print\n"); // Print has no applicable items
+        cout << "Once_Inside_Print\n"; // Print has no applicable items
     }
     | Read SEMI {
-        printf("Once_Inside_Read\n"); // Print has no applicable items
+        cout << "Once_Inside_Read\n"; // Print has no applicable items
     }
     | IDENTIFIER LPAREN Info RPAREN SEMI {
-        printf("Once_Inside_Function_Call %s\n", $1); // function calls made inside other functions
+        cout << "Once_Inside_Function_Call " << $1 << endl; // function calls made inside other functions
     }
     | K_DO Till LPAREN LoopParam RPAREN InsideDo {
-        printf("Once_Inside_Do\n"); // function calls made inside other functions
+        cout << "Once_Inside_Do\n"; // function calls made inside other functions
     }
     | IDENTIFIER INCREMENT SEMI {
-        printf("Once_Increment_item %s\n", $1); // Identifier stored in data
+        cout << "Once_Increment_item " << $1 << endl; // Identifier stored in data
     }
     | IDENTIFIER DECREMENT SEMI {
-        printf("Once_Decrement_item %s\n", $1); // Identifier stored in data 
+        cout << "Once_Decrement_item " << $1 << endl; // Identifier stored in data
     }
     | K_RETURN Item SEMI{
-        printf("Once_Return_Item\n"); // No valid $1 reference here
+        cout << "Once_Return_Item\n"; // No valid $1 reference here
     };
 
 Conditional:
     Item ConditionalEquation Item{
-        printf("Condition_Only\n");
+        cout << "Condition_Only\n";
     }
     | NOT LPAREN Conditional RPAREN{
-        printf("Condition_Not !\n");
+        cout << "Condition_Not !\n";
     }
     | Conditional DOR Item ConditionalEquation Item{
-        printf("Condition_Or ||\n");
+        cout << "Condition_Or ||\n";
     }
     | Conditional DAND Item ConditionalEquation Item{
-        printf("Condition_And &&\n");
+        cout << "Condition_And &&\n";
     };
 
 ConditionalEquation:
     DEQ{
-        printf("CondEq ==\n");
+        cout << "CondEq ==\n";
     }
     | GEQ{
-        printf("CondEq >=\n");
+        cout << "CondEq >=\n";
     }
     | LEQ{
-        printf("CondEq <=\n");
+        cout << "CondEq <=\n";
     }
     | NE{
-        printf("CondEq !=\n");
+        cout << "CondEq !=\n";
     }
     | GT{
-        printf("CondEq >\n");
+        cout << "CondEq >\n";
     }
     | LT{
-        printf("CondEq <\n");
+        cout << "CondEq <\n";
     };
 
 
 Info:
     Item COMMA Info {
-        printf("Inner_Function_Parameters\n");
+        cout << "Inner_Function_Parameters\n";
     }
     | Item {
-        printf("Inner_Function_Parameter\n");
+        cout << "Inner_Function_Parameter\n";
     };
 
 SetEqualTo:
     IDENTIFIER ASSIGN Item {
-        printf("Assign_Item %s\n", $1); // $1 is the IDENTIFIER
+        cout << "Assign_Item " <<  $1 << endl; // $1 is the IDENTIFIER
     }
     | IDENTIFIER ASSIGN_DIVIDE Item {
-        printf("Assign_Item_Divide %s\n", $1);
+        cout << "Assign_Item_Divide " << $1 << endl;
     }
     | IDENTIFIER ASSIGN_MINUS Item {
-        printf("Assign_Item_Minus %s\n", $1);
+        cout << "Assign_Item_Minus " << $1 << endl;
     }
     | IDENTIFIER ASSIGN_MOD Item {
-        printf("Assign_Item_Mod %s\n", $1);
+        cout << "Assign_Item_Mod " << $1 << endl;
     }
     | IDENTIFIER ASSIGN_MULTIPLY Item {
-        printf("Assign_Item_Multiply %s\n", $1);
+        cout << "Assign_Item_Multiply " << $1 << endl;
     }
     | IDENTIFIER ASSIGN_PLUS Item {
-        printf("Assign_Item_Plus %s\n", $1);
+        cout << "Assign_Item_Plus " << $1 << endl;
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN Item {
-        printf("Assign_Array %s\n", $1); // $1 is the IDENTIFIER
+        cout << "Assign_Array " << $1 << endl; // $1 is the IDENTIFIER
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_DIVIDE Item {
-        printf("Assign_Array_Divide %s\n", $1);
+        cout << "Assign_Array_Divide " << $1 << endl;
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MINUS Item {
-        printf("Assign_Array_Minus %s\n", $1);
+        cout << "Assign_Array_Minus " << $1 << endl;
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MOD Item {
-        printf("Assign_Array_Mod %s\n", $1);
+        cout << "Assign_Array_Mod " << $1 << endl;
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_MULTIPLY Item {
-        printf("Assign_Array_Multiply %s\n", $1);
+        cout << "Assign_Array_Multiply %s" << $1 << endl;
     }
     | IDENTIFIER LBRACKET Math RBRACKET ASSIGN_PLUS Item {
-        printf("Assign_Array_Plus %s\n", $1);
+        cout << "Assign_Array_Plus " << $1 << endl;
     }
     | IDENTIFIER LBRACKET Math RBRACKET {
-        printf("Assign_Identifier_Array %s\n", $1);
+        cout << "Assign_Identifier_Array " << $1 << endl;
     }
     | /* empty */ {
-        printf("Assign_Empty\n");
+        cout <<"Assign_Empty\n";
     };
 
 Print:
     K_PRINT_INTEGER LPAREN Item RPAREN {
-        printf("PrintI %s\n", $3); // $3 is the IDENTIFIER
+        cout << "PrintI " << $3 << endl; // $3 is the IDENTIFIER
     }
     | K_PRINT_STRING LPAREN Item RPAREN {
-        printf("PrintS %s\n", $3);
+        cout << "PrintS " << $3 << endl;
     }
     | K_PRINT_DOUBLE LPAREN Item RPAREN {
-        printf("PrintD %s\n", $3);
+        cout << "PrintD " << $3 << endl;
     };
 Read:
     K_READ_INTEGER LPAREN IDENTIFIER RPAREN {
-        printf("ReadI %s\n", $3); // $3 is the IDENTIFIER
+        cout << "ReadI " << $3 << endl; // $3 is the IDENTIFIER
     }
     | K_READ_STRING LPAREN IDENTIFIER RPAREN {
-        printf("ReadS %s\n", $3);
+        cout << "ReadS " << $3 << endl;
     }
     | K_READ_DOUBLE LPAREN IDENTIFIER RPAREN {
-        printf("ReadD %s\n", $3);
+        cout << "ReadD " << $3 << endl;
     }
     | K_READ_INTEGER LPAREN ICONSTANT RPAREN {
-        printf("ReadI %s\n", $3); // $3 is ICONSTANT
+        cout << "ReadI " << $3 << endl; // $3 is ICONSTANT
     }
     | K_READ_STRING LPAREN SCONSTANT RPAREN {
-        printf("ReadS %s\n", $3); // $3 is SCONSTANT
+        cout << "ReadS " << $3 << endl; // $3 is SCONSTANT
     }
     | K_READ_DOUBLE LPAREN DCONSTANT RPAREN {
-        printf("ReadD %s\n", $3); // $3 is DCONSTANT
+        cout << "ReadD " << $3 << endl; // $3 is DCONSTANT
     };
 
 Item:
     SCONSTANT {
-        printf("Item_Sconstant %s\n", $1); // $1 is SCONSTANT
+        cout << "Item_Sconstant " << $1 << endl; // $1 is SCONSTANT
     }
     | IDENTIFIER ASSIGN Item {
-        printf("Item_Assign %s\n", $1); // $1 is the IDENTIFIER
+        cout << "Item_Assign " << $1 << endl; // $1 is the IDENTIFIER
     }
     | IDENTIFIER LBRACKET MathI RBRACKET ASSIGN Item {
-        printf("Item_Assign_Array %s\n", $1); // $1 is the IDENTIFIER
+        cout << "Item_Assign_Array " << $1 << endl; // $1 is the IDENTIFIER
     }
     | MathI{
-        printf("Item_Math_Equation\n");
+        cout << "Item_Math_Equation\n";
     };
 
 Math:
     MathI{
-        printf("Math_Equation\n");
+        cout << "Math_Equation\n";
     }
     | /* empty */{
-        printf("Math_Empty\n");
+        cout << "Math_Empty\n";
     };
 MathI:
     MathI PLUS MathI2{
-        printf("MathI_Plus +\n");
+        cout << "MathI_Plus +\n";
     }
     | MathI MINUS MathI2{
-        printf("MathI_Minus -\n");
+        cout << "MathI_Minus -\n";
     }
     | MathI2{
-        printf("MathI_to_I2\n");
+        cout << "MathI_to_I2\n";
     };
 MathI2:
     MathI2 MULTIPLY MathI3{
-        printf("MathI2_Multiply *\n");
+        cout << "MathI2_Multiply *\n";
     }
     | MathI2 MOD MathI3{
-        printf("MathI2_Mod mod\n");
+        cout << "MathI2_Mod mod\n";
     }
     | MathI2 DIVIDE MathI3{
-        printf("MathI2_Divide /\n");
+        cout << "MathI2_Divide /\n";
     }
     | MathI3{
-        printf("MathI2_to_I3\n");
+        cout << "MathI2_to_I3\n";
     };
 MathI3:
     IDENTIFIER{
-        printf("MathI3_Identifier %s\n", $1);
+        cout << "MathI3_Identifier " << $1 << endl;
     }
     | ICONSTANT{
-        printf("MathI3_Iconstant %s\n", $1);
+        cout << "MathI3_Iconstant " << $1 << endl;
     }
     | DCONSTANT{
-        printf("MathI3_Dconstant %s\n", $1);
+        cout << "MathI3_Dconstant " << $1 << endl;
     }
     | IDENTIFIER INCREMENT{
-        printf("MathI3_Identifier_Increment %s++\n", $1);
+        cout << "MathI3_Identifier_Increment " << $1 << "++\n";
     }
     | IDENTIFIER DECREMENT{
-        printf("MathI3_Identifier_Decrement %s--\n", $1);
+        cout << "MathI3_Identifier_Decrement " << $1 << "--\n";
     }
     | LPAREN MathI RPAREN{
-        printf("MathI3_Paren_Math\n");
+        cout << "MathI3_Paren_Math\n";
     }
     | MINUS IDENTIFIER{
-        printf("MathI3_Negative_Identifier -%s\n", $2);
+        cout << "MathI3_Negative_Identifier -" << $2 << endl;
     }
     | MINUS ICONSTANT{
-        printf("MathI3_Negative_Iconstant -%s\n", $2);
+        cout << "MathI3_Negative_Iconstant -" << $2 << endl;
     }
     | MINUS DCONSTANT{
-        printf("MathI3_Negative_Dconstant -%s\n", $2);
+        cout << "MathI3_Negative_Dconstant -" << $2 << endl;
     }
     | MINUS IDENTIFIER LBRACKET MathI RBRACKET{
-        printf("MathI3_Negative_Array -%s\n", $2);
+        cout << "MathI3_Negative_Array -" << $2 << endl;
     }
     | IDENTIFIER LBRACKET MathI RBRACKET{
-        printf("MathI3_Array %s\n", $1);
+        cout << "MathI3_Array " << $1 << endl;
     }
     | IDENTIFIER LPAREN Info RPAREN{
-        printf("MathI3_Function_Call %s\n", $1);
+        cout << "MathI3_Function_Call " << $1 << endl;
     };
 
 %%
-// Main function
+// Main function not needed
 
-int main(){
-    yyparse();
-    return 0;
-}

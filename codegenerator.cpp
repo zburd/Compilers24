@@ -3,7 +3,16 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <sstream>
+#include <streambuf>
 #include "symbolgenerator.h"
+//linking the tab as if we used the line in makefile
+#include "lex.yy.c"
+#include "parser.tab.h"
+
+extern "C++" {
+    int yyparse();
+}
 
 
 using std::vector;
@@ -12,6 +21,9 @@ using std::stack;
 using std::ifstream;
 using std::cout;
 using std::ofstream;
+using std::cerr;
+using std::stringstream;
+using std::streambuf;
 
 //this class is for variable information, basically a condensed parsetreenode without
 //linked list properties, with some other special aspects to make things easier
@@ -172,21 +184,89 @@ int mainFinder(vector<varContainer> NT){
     return counter;
 }
 
-int main() {
-    //todo, link up the flex and bison stuff here and also have some char* argv instead of hardcoded filenames
-    string filename = "parserout.txt";
-	ParseTreeNode* tree = buildParseTreeFromFile (filename);
-	//step one, check for it being a program
+int main(int argc, char* argv[]) {
+    int cmdswitch = 0; //flag for debug so far, should be zero by default.
+    string input;
+    string thisswitch = "";
+    if (argc < 2) {
+        cerr << "No file specified, exiting.\n";
+        return 2; //no file error
+    } else if (argc > 4) {
+        cerr << "Too many arguments, exiting.\n";
+        return 3; //too many args error code
+    } else if (argc == 2) {
+         input = argv[1]; //filename
+        if (input == "-help") { //special case
+            cout << "Usage: ./compilemg24 <file> [single option]\n";
+            cout << "Specifying no options means it will only report errors.\n";
+            cout << "Options:\n";
+            cout << "-parseonly: parse only to parserout.txt and exit. no error reporting.\n";
+            cout << "-treedebug: parse, and print tree and remaining stack to screen, then exit\n";
+            cout << "-debugextreme: parse, slowly print debug info to screen, then print tree and remaining stack, then exit\n";
+            //todo: add more switches as needed.
+            return 0; //done
+        }
+        else if (argc == 3){
+            input = argv[1]; //filename
+            thisswitch = argv[2];
+            if(thisswitch == "-parseonly"){ cmdswitch = 1;}
+            else if(thisswitch == "-treedebug"){ cmdswitch = 2; }
+            else if(thisswitch == "-debugextreme"){ cmdswitch = 3; }
+        }
+    }
 
-	printParseTree (tree);
+    //if we're here, we will make a call to the parser internally, like a library
 
-	if (tree->name == "Program"){
-		// Start walking through the program and declaring functions
-		//declareFunction (tree -> children[0]);
-	}
-	else {
-	    cout << "Syntax error: Programs must start with program keyword.\n" << tree->name;
-	    return 0; //probably should use an error code here along with cerr
+    yyin = fopen(argv[1], "r");
+    if (!yyin) {
+      cerr << "Error opening file " << argv[1] << "\n";
+      return 9;
+    }
+    //weird stdout redirection that i wish i didn't have to use or figure out >:c
+    stringstream buffer;
+    std::streambuf* internaltree = std::cout.rdbuf(buffer.rdbuf()); //redirects output from parser into buffer stream
+
+    int status = yyparse(); //do it
+
+    //restore cout to stdout
+    std::cout.rdbuf(internaltree);
+    if (status == 1) { cerr << "Error parsing: syntax error in parser.\n"; }
+    else if (status == 2) { cerr << "Error parsing: memory exhaustion.\n"; }
+
+
+    if (cmdswitch == 1) { //this is the parseonly option.
+        std::ofstream outfile("parserout.txt", std::ios::out);
+
+        if (outfile.is_open()) {
+            outfile << buffer.str(); //put it in the output.
+        } else {
+            std::cerr << "Error outputting parse results.\n";
+            return 11; //error code
+        }
+
+        return 0; //did what it's supposed to
+    }
+
+    ParseTreeNode* tree; //get ready
+    if (cmdswitch == 0) { //just compile
+        tree = buildParseTreeInternal(buffer);
+    }
+    else if (cmdswitch == 2) { //treedebug option
+        tree = buildParseTreeInternal(buffer);
+        printParseTree (tree);
+        return 0; //did what it's supposed to
+    }
+    else if (cmdswitch == 3) { //extremedebug option
+        tree = buildParseTreeInternal(buffer, true);
+        printParseTree (tree);
+        return 0; //did what it's supposed to
+    }
+
+
+    //actually start doing stuff
+	if (tree->name != "Program"){
+	    cerr << "Syntax error: Programs must start with program keyword.\n" << tree->name;
+	    return 1; //invalid program
 	}
 
     //step 2: evaluate child nodes of program
@@ -194,8 +274,8 @@ int main() {
 
     //if this is empty we have an empty program, this is invalid
     if (firstclass.empty()) {
-        cout << "Syntax error: Program must not be empty.\n";
-	    return 0;
+        cerr << "Syntax error: Program must not be empty.\n";
+	    return 4; //empty program
     }
 
     //with these checks satisfied, we can begin to process the functions and procedures inside of program
@@ -205,31 +285,26 @@ int main() {
     {
 
         if (firstclass[i]->isVariable()) {
-            cout << "Syntax error: Only functions and procedures are allowed inside of program declaration.\n";
-            return 0;
+            cerr << "Syntax error: Only functions and procedures are allowed inside of program declaration.\n";
+            return 5; //error with contents of program
         }
     }
 
     //then, we check to make sure that one and ONLY one of these functions is a main, if not, this is invalid
-
-
     int functions = funcCounter(*tree);
-
     int maincounter = mainFinder(funcInfo);
 
-
-
     if (maincounter == 0) {
-        cout << "Syntax error: No main function.\n";
-        return 0;
+        cerr << "Syntax error: No main function.\n";
+        return 6; //no main found
     } else if (maincounter > 1) {
-        cout << "Syntax error: Multiple main functions. Remove one.\n";
-        return 0;
+        cerr << "Syntax error: Multiple main functions. Remove one.\n";
+        return 7; //too many mains
     }
 
     //next, we now know we have a singular main function. We also have the node that contains this special function. We start building code from here.
 
-
+    //this will import from a library linked against f24.c
 
 	//cout << "\n//Done inside program\n";
 
