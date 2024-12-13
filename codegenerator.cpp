@@ -206,13 +206,12 @@ int main(int argc, char* argv[]) {
             //todo: add more switches as needed.
             return 0; //done
         }
-        else if (argc == 3){
-            input = argv[1]; //filename
-            thisswitch = argv[2];
-            if(thisswitch == "-parseonly"){ cmdswitch = 1;}
-            else if(thisswitch == "-treedebug"){ cmdswitch = 2; }
-            else if(thisswitch == "-debugextreme"){ cmdswitch = 3; }
-        }
+    } else if (argc == 3){
+        input = argv[1]; //filename
+        thisswitch = argv[2];
+        if(thisswitch == "-parseonly"){ cmdswitch = 1;}
+        else if(thisswitch == "-treedebug"){ cmdswitch = 2; }
+        else if(thisswitch == "-debugextreme"){ cmdswitch = 3; }
     }
 
     //if we're here, we will make a call to the parser internally, like a library
@@ -316,7 +315,7 @@ int main(int argc, char* argv[]) {
     for(int i = 0; i < lineInfo.size(); i++){
         cout << "data for line is " << lineInfo[i].getData() << ". name for line is " << lineInfo[i].getName() << ". " << i << "\n";
     }
-
+    //printParseTree(tree);
     MyFile << "int yourmain()\n{\n    // Stack adjustment\n";
     int vars = varCounter(*tree);
     MyFile << "    SR -= " << vars << ";\n";

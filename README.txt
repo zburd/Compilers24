@@ -1,16 +1,22 @@
-Zachary Burd, Jeremy Estes, James Lucid
+Zachary Burd, Jeremy Estes and James Lucid
 
-Makefile compiles lexer/parser, compiles symbolgenerator.h, and outputs to parserout.txt file. 
+# F24 Compilerma
 
-To test the parse tree, run the following:
-
+To compile, run:
 make
-g++ symbolgeneratortest.cpp
-./a.out
 
-It dumps the stack which is left with only 52 entries on it. While this indicates there are bugs, it indicates that the parse tree is over 95% complete, since the parserout.txt is over 1300 lines.
+Makefile compiles codegenerator and parser into one program. The executable is named f24compiler.
+
+To run with a debugger like gdb, run:
+make debug
+
+To use, run:
+./f24compiler <filename> <options>
+
+Options are optional. To simply compile an f24 file, do not specify options.
+
+To get help for options, run:
+./f24compiler -help
 
 To clean the files type:
-
 make clean
-

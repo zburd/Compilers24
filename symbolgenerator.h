@@ -858,7 +858,7 @@ bool isParent (ParseTreeNode* parent, ParseTreeNode* child) {
 	else { return false; }
 }
 
-ParseTreeNode* buildParseTreeFromFile (string filename) { //vestgial
+ParseTreeNode* buildParseTreeFromFile (string filename) {
 	
 	// Uses a stack to handle the reverse polish notation format
 	stack<ParseTreeNode*> nodeStack;
@@ -919,89 +919,14 @@ ParseTreeNode* buildParseTreeFromFile (string filename) { //vestgial
 	file.close();
 	return finalTree;
 }
-ParseTreeNode* buildParseTreeInternal (stringstream& input, bool dflag = false) { //build parse tree in memory, if dflag is true then we do more
 
-	// Uses a stack to handle the reverse polish notation format
-	stack<ParseTreeNode*> nodeStack;
-	string line;
-
-	ParseTreeNode* finalTree = nullptr;
-
-    int linecount = 0;
-	// Reads in the file, pushes each line as a node on the stack
-	while (std::getline(input, line)) {
-        linecount++;
-		// make a new node for the data in the line
-		ParseTreeNode* newNode = nullptr;
-		int pos = line.find(" ");
-		if (pos == -1) {newNode = new ParseTreeNode(line);}
-		else { newNode = new ParseTreeNode(line.substr(0,pos),line.substr(pos+1)); }
-		newNode->originalline = linecount;
-
-
-        if (dflag) {
-             while (!nodeStack.empty()){
-			    if (isParent(newNode, nodeStack.top())){
-				    // If the node on the stack is a child of the new node,
-				    // it is added to the new node and then popped
-				    newNode -> addChild(nodeStack.top());
-				    //std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
-				    nodeStack.pop();
-			    } else {
-				    break;
-			    }
-		    }
-            nodeStack.push(newNode);
-        } else { //same crap but really slow!
-             while (!nodeStack.empty()){
-               //std::cout << "Is  " << newNode->name << " the parent of " << nodeStack.top()->name << "?\n";
-               //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-			    if (isParent(newNode, nodeStack.top())){
-				    // If the node on the stack is a child of the new node,
-				    // it is added to the new node and then popped
-                    //std::cout << "Yes. Adding node as child to " << newNode->name << ".\n";
-                    //std::this_thread::sleep_for(std::chrono::milliseconds(500));
-				    newNode -> addChild(nodeStack.top());
-				    //std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
-                    //std::cout << "Removing child node " << nodeStack.top()->name << " from stack.\n";
-				    nodeStack.pop();
-                    //std::this_thread::sleep_for(std::chrono::milliseconds(500));
-			    } else {
-                    //std::cout << "No. " << newNode->name << " is NOT the parent of " << nodeStack.top()->name << ".\n";
-				    break;
-			    }
-		    }
-            //std::cout << "Adding " << newNode->name << " to stack. This node has no children.\n";
-            nodeStack.push(newNode);
-            //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        }
-
-
-	}
-    //maybe have another switch here?
-	if (!nodeStack.empty()){ //at this point the nodestack should only have the program element on it.
-		finalTree = nodeStack.top();
-		nodeStack.pop();
-	}
-
-	// For debugging only, the stack should be empty now.
-	if (!nodeStack.empty()){
-		std::cout << "Stack size remaining:                        : " << nodeStack.size() << "\n";
-		while (!nodeStack.empty()){
-			std::cout  << nodeStack.top()->name << " contents: " << nodeStack.top()->data << " from line " << nodeStack.top()->originalline << "\n";
-			nodeStack.pop();
-		}
-	}
-
-	return finalTree;
-}
 void printParseTree(ParseTreeNode* tree, int depth = 0) {
     if (tree == nullptr) {
         return;
     }
 
     // Print the current node with indentation based on depth
-    cout << string(depth * 4, ' ') // Indentation (4 spaces per depth level)
+    cout << string(depth * 1, ' ') // Indentation (4 spaces per depth level)
          << "Node: " << tree->name 
          << ", Data: " << tree->data 
 	 << ", dtype: " << tree->dtype << std::endl;
@@ -1012,7 +937,7 @@ void printParseTree(ParseTreeNode* tree, int depth = 0) {
     }
 }
 
-void declareFunction (ParseTreeNode* ftree){ //vestigial?
+void declareFunction (ParseTreeNode* ftree){
 	// Walks through the tree and find all declarations in scope, starting at function
 
 	if (ftree->name != "Function") {
@@ -1046,4 +971,81 @@ void declareFunction (ParseTreeNode* ftree){ //vestigial?
 	// Handle functions after this one.
 	if (ftree->children[0]->name == "Function") {declareFunction(ftree->children[0]);}
 	cout << "\n//Done inside function\n";
+}
+
+ParseTreeNode* buildParseTreeInternal (stringstream& input, bool dflag = false) { //build parse tree in memory, if dflag is true then we do more
+
+	// Uses a stack to handle the reverse polish notation format
+	stack<ParseTreeNode*> nodeStack;
+	string line;
+
+	ParseTreeNode* finalTree = nullptr;
+
+    int linecount = 0;
+	// Reads in the file, pushes each line as a node on the stack
+	while (std::getline(input, line)) {
+        linecount++;
+		// make a new node for the data in the line
+		ParseTreeNode* newNode = nullptr;
+		int pos = line.find(" ");
+		if (pos == -1) {newNode = new ParseTreeNode(line);}
+		else { newNode = new ParseTreeNode(line.substr(0,pos),line.substr(pos+1)); }
+		newNode->originalline = linecount;
+
+
+        if (!dflag) {
+             while (!nodeStack.empty()){
+			    if (isParent(newNode, nodeStack.top())){
+				    // If the node on the stack is a child of the new node,
+				    // it is added to the new node and then popped
+				    newNode -> addChild(nodeStack.top());
+				    //std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
+				    nodeStack.pop();
+			    } else {
+				    break;
+			    }
+		    }
+            nodeStack.push(newNode);
+        } else if (dflag == true) { //same crap but really slow!
+             while (!nodeStack.empty()){
+               std::cout << "Is  " << newNode->name << " the parent of " << nodeStack.top()->name << "?\n";
+               std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+			    if (isParent(newNode, nodeStack.top())){
+				    // If the node on the stack is a child of the new node,
+				    // it is added to the new node and then popped
+                    std::cout << "Yes. Adding node as child to " << newNode->name << ".\n";
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+				    newNode -> addChild(nodeStack.top());
+				    //std::cout << "Added " << nodeStack.top()->name << " to " <<newNode->name<<"\n";
+                    std::cout << "Removing child node " << nodeStack.top()->name << " from stack.\n";
+				    nodeStack.pop();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			    } else {
+                    std::cout << "No. " << newNode->name << " is NOT the parent of " << nodeStack.top()->name << ".\n";
+				    break;
+			    }
+		    }
+            std::cout << "Adding " << newNode->name << " to stack. This node has no children.\n";
+            nodeStack.push(newNode);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        }
+
+
+	}
+    //maybe have another switch here?
+	if (!nodeStack.empty()){ //at this point the nodestack should only have the program element on it.
+		finalTree = nodeStack.top();
+		nodeStack.pop();
+	}
+
+	// For debugging only, the stack should be empty now.
+	if (!nodeStack.empty()){
+		std::cout << "Stack size remaining:                        : " << nodeStack.size() << "\n";
+		while (!nodeStack.empty()){
+			std::cout  << nodeStack.top()->name << " contents: " << nodeStack.top()->data << " from line " << nodeStack.top()->originalline << "\n";
+			nodeStack.pop();
+		}
+	}
+
+	return finalTree;
 }

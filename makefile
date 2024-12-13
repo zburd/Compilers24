@@ -1,23 +1,18 @@
-.PHONY: all flex lex.yy.c a.out clean
+.PHONY: all debug normalcompile run clean
 
-all: flex
+all: normalcompile
 
 debug:
 	@bison -d parser.y
 	@flex lexer.l
-	@g++ parser.tab.c codegenerator.cpp -lm -g -DDEBUG -o f24compiler
-	@./f24compiler mg.f24
+	@g++ parser.tab.c codegenerator.cpp -ll -lm -g -DDEBUG -o f24compiler
 
 normalcompile:
 	@bison -d parser.y
 	@flex lexer.l
-	@g++ parser.tab.c codegenerator.cpp -lm -g -o f24compiler
-	@./f24compiler mg.f24
+	@g++ parser.tab.c codegenerator.cpp -ll -lm -g -o f24compiler
 
-flex:
-	@bison -d parser.y
-	@flex lexer.l
-	@g++ parser.tab.c codegenerator.cpp -lm -g -o f24compiler
+run:
 	@./f24compiler mg.f24
 
 clean:
