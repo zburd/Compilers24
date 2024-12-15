@@ -157,6 +157,15 @@ int vectorFinder(vector<varContainer> NT, string var){
     return -1;
 }
 
+int vectorNameFinder(vector<varContainer> NT, string var){
+    for(int i = 0; i < NT.size(); i++){
+        if(var == NT[i].getName()){
+            return i;
+        }
+    }
+    return -1;
+}
+
 void lineCounter(ParseTreeNode &PT){
     vector<ParseTreeNode*> children = PT.getChildren();
     int size = children.size()-1;
@@ -260,17 +269,28 @@ vector<varContainer> varTableGen (ParseTreeNode* PT, bool dflag = false) //pt is
 
 
 //math macros - Jeremy
+bool is_number(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
 
-int mathISolver(ParseTreeNode &PT){
+int mathISolver(ParseTreeNode &PT, vector<varContainer> NT){
     vector<ParseTreeNode*> children = PT.getChildren();
     int size = children.size();
-    if(size == 0){return stoi(PT.data);}
-    else if(size == 1 && PT.dtype == -1){return stoi(varInfo[vectorFinder(varInfo, PT.name)].getData());}
-    else if(size == 1){return mathISolver(*children[0]);}
+    if(size == 0 && !is_number(PT.data)){
+        int var = vectorNameFinder(NT, PT.data);
+        MyFile << "    R[2] = Mem[SR+" << var << "]" << ";\n";
+        MyFile << "    F24_Time += (20+1);\n";
+        return stoi(NT[vectorNameFinder(NT, PT.data)].getData());
+        }
+    else if(size == 0){return stoi(PT.data);}
+    else if(size == 1){return mathISolver(*children[0], NT);}
     else if(size == 1 && PT.name == "MathI3_Function_Call"){/*something that figures out function return value*/}
     else if(size == 2){
-        int var1 = mathISolver(*children[0]);
-        int var2 = mathISolver(*children[1]);
+        int var1 = mathISolver(*children[0], NT);
+        int var2 = mathISolver(*children[1], NT);
         if(PT.data == "+"){
             MyFile << "    R[1] = " << var1 << ";\n";
             MyFile << "    F24_Time += (1);\n";
@@ -320,53 +340,59 @@ int mathISolver(ParseTreeNode &PT){
     return -1;
 }
 
-double mathDSolver(ParseTreeNode &PT){
+double mathDSolver(ParseTreeNode &PT, vector<varContainer> NT){
     vector<ParseTreeNode*> children = PT.getChildren();
     int size = children.size();
-    if(size == 0){return stod(PT.data);}
-    else if(size == 1 && PT.dtype == -1){return stod(varInfo[vectorFinder(varInfo, PT.name)].getData());}
-    else if(size == 1){return mathISolver(*children[0]);}
+    if(size == 0 && !is_number(PT.data)){
+        int var = vectorNameFinder(NT, PT.data);
+        MyFile << "    F[2] = FMem[FR+" << var << "]" << ";\n";
+        MyFile << "    F24_Time += (20+2);\n";
+        return stoi(NT[vectorNameFinder(NT, PT.data)].getData());
+        }
+    else if(size == 0){return stod(PT.data);}
+    else if(size == 1){return mathDSolver(*children[0], NT);}
     else if(size == 1 && PT.name == "MathI3_Function_Call"){/*something that figures out function return value*/}
     else if(size == 2){
-        double var1 = mathISolver(*children[0]);
-        double var2 = mathISolver(*children[1]);
+        double var1 = mathDSolver(*children[0], NT);
+        double var2 = mathDSolver(*children[1], NT);
         if(PT.data == "+"){
-            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F[1] = " << var1 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F[2] = " << var2 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[1] += R[2];\n";
+            MyFile << "    F[1] += F[2];\n";
             MyFile << "    F24_Time += (4);\n";
             return var1 + var2;
             }
         else if(PT.data == "-"){
-            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F[1] = " << var1 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F[2] = " << var2 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[1] -= R[2];\n";
+            MyFile << "    F[1] -= F[2];\n";
             MyFile << "    F24_Time += (4);\n";
             return var1 - var2;
             }
         else if(PT.data == "*"){
-            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F[1] = " << var1 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F[2] = " << var2 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[1] *= R[2];\n";
+            MyFile << "    F[1] *= F[2];\n";
             MyFile << "    F24_Time += (4);\n";
             return var1 * var2;
             }
         else if(PT.data == "/"){
-            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F[1] = " << var1 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F[2] = " << var2 << ";\n";
             MyFile << "    F24_Time += (2);\n";
-            MyFile << "    R[1] /= R[2];\n";
+            MyFile << "    F[1] /= F[2];\n";
             MyFile << "    F24_Time += (4);\n";
             return var1 / var2;
             }
     }
     return -1;
 }
+
 
