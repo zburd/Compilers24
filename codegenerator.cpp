@@ -15,6 +15,7 @@ extern "C++" {
 }
 
 
+using namespace std;
 using std::vector;
 using std::string;
 using std::stack;
@@ -97,6 +98,7 @@ class varContainer {
 vector<varContainer> lineInfo;
 vector<varContainer> varInfo;
 vector<varContainer> funcInfo;
+ofstream MyFile("yourmain.h");
 ParseTreeNode* empty;
 
 int varCounter(ParseTreeNode &PT){
@@ -173,7 +175,6 @@ void lineCounter(ParseTreeNode &PT){
     }
 }
 
-
 int mainFinder(vector<varContainer> NT){
     int counter = 0;
     for(int i = 0; i < NT.size(); i++){
@@ -182,6 +183,115 @@ int mainFinder(vector<varContainer> NT){
         }
     }
     return counter;
+}
+
+int mathISolver(ParseTreeNode &PT){
+    vector<ParseTreeNode*> children = PT.getChildren();
+    int size = children.size();
+    if(size == 0){return stoi(PT.data);}
+    else if(size == 1 && PT.dtype == -1){return stoi(varInfo[vectorFinder(varInfo, PT.name)].getData());}
+    else if(size == 1){return mathISolver(*children[0]);}
+    else if(size == 1 && PT.name == "MathI3_Function_Call"){/*something that figures out function return value*/}
+    else if(size == 2){
+        int var1 = mathISolver(*children[0]);
+        int var2 = mathISolver(*children[1]);
+        if(PT.data == "+"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[1] += R[2];\n";
+            MyFile << "    F24_Time += (2);\n";
+            return var1 + var2;
+            }
+        else if(PT.data == "-"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[1] -= R[2];\n";
+            MyFile << "    F24_Time += (2);\n";
+            return var1 - var2;
+            }
+        else if(PT.data == "*"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[1] *= R[2];\n";
+            MyFile << "    F24_Time += (2);\n";
+            return var1 * var2;
+            }
+        else if(PT.data == "/"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[1] /= R[2];\n";
+            MyFile << "    F24_Time += (2);\n";
+            return var1 / var2;
+            }
+        else if(PT.data == "%"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (1);\n";
+            MyFile << "    R[1] %= R[2];\n";
+            MyFile << "    F24_Time += (2);\n";
+            return var1 % var2;
+            }
+    }
+    return -1;
+}
+
+double mathDSolver(ParseTreeNode &PT){
+    vector<ParseTreeNode*> children = PT.getChildren();
+    int size = children.size();
+    if(size == 0){return stod(PT.data);}
+    else if(size == 1 && PT.dtype == -1){return stod(varInfo[vectorFinder(varInfo, PT.name)].getData());}
+    else if(size == 1){return mathISolver(*children[0]);}
+    else if(size == 1 && PT.name == "MathI3_Function_Call"){/*something that figures out function return value*/}
+    else if(size == 2){
+        double var1 = mathISolver(*children[0]);
+        double var2 = mathISolver(*children[1]);
+        if(PT.data == "+"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[1] += R[2];\n";
+            MyFile << "    F24_Time += (4);\n";
+            return var1 + var2;
+            }
+        else if(PT.data == "-"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[1] -= R[2];\n";
+            MyFile << "    F24_Time += (4);\n";
+            return var1 - var2;
+            }
+        else if(PT.data == "*"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[1] *= R[2];\n";
+            MyFile << "    F24_Time += (4);\n";
+            return var1 * var2;
+            }
+        else if(PT.data == "/"){
+            MyFile << "    R[1] = " << var1 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[2] = " << var2 << ";\n";
+            MyFile << "    F24_Time += (2);\n";
+            MyFile << "    R[1] /= R[2];\n";
+            MyFile << "    F24_Time += (4);\n";
+            return var1 / var2;
+            }
+    }
+    return -1;
 }
 
 int main(int argc, char* argv[]) {
@@ -307,15 +417,11 @@ int main(int argc, char* argv[]) {
 
 	//cout << "\n//Done inside program\n";
 
-    ofstream MyFile("yourmain.h");
 
     lineCounter(*funcInfo[vectorFinder(funcInfo, "main")].getVarTree());
 
 
-    for(int i = 0; i < lineInfo.size(); i++){
-        cout << "data for line is " << lineInfo[i].getData() << ". name for line is " << lineInfo[i].getName() << ". " << i << "\n";
-    }
-    //printParseTree(tree);
+    printParseTree(tree);
     MyFile << "int yourmain()\n{\n    // Stack adjustment\n";
     int vars = varCounter(*tree);
     MyFile << "    SR -= " << vars << ";\n";
