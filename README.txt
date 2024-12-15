@@ -1,6 +1,6 @@
 Zachary Burd, Jeremy Estes and James Lucid
 
-# F24 Compilerma
+# F24 Language Compiler
 
 To compile, run:
 make
