@@ -395,4 +395,77 @@ double mathDSolver(ParseTreeNode &PT, vector<varContainer> NT){
     return -1;
 }
 
-
+bool equalitySolver(ParseTreeNode &PT, vector<varContainer> NT){
+    vector<ParseTreeNode*> children = PT.getChildren();
+    int size = children.size();
+    if(size == 3){
+        if(true/*dealing with int math*/){
+            int var1 = mathISolver(*children[0], NT);
+            int var2 = mathISolver(*children[2], NT);
+            if(children[1]->data == "=="){return var1 == var2;}
+            else if(children[1]->data == ">="){return var1 >= var2;}
+            else if(children[1]->data == "<="){return var1 <= var2;}
+            else if(children[1]->data == "<"){return var1 < var2;}
+            else if(children[1]->data == ">"){return var1 > var2;}
+            else if(children[1]->data == "!="){return var1 != var2;}
+        }
+        else{
+            double var1 = mathDSolver(*children[0], NT);
+            double var2 = mathDSolver(*children[2], NT);
+            if(children[1]->data == "=="){return var1 == var2;}
+            else if(children[1]->data == ">="){return var1 >= var2;}
+            else if(children[1]->data == "<="){return var1 <= var2;}
+            else if(children[1]->data == "<"){return var1 < var2;}
+            else if(children[1]->data == ">"){return var1 > var2;}
+            else if(children[1]->data == "!="){return var1 != var2;}
+        }
+    }
+    else if(size == 4 && PT.data == "||"){
+        if(equalitySolver(*children[0], NT)){return true;}
+        if(true/*dealing with int math*/){
+            int var1 = mathISolver(*children[0], NT);
+            int var2 = mathISolver(*children[2], NT);
+            if(children[1]->data == "=="){return var1 == var2;}
+            else if(children[1]->data == ">="){return var1 >= var2;}
+            else if(children[1]->data == "<="){return var1 <= var2;}
+            else if(children[1]->data == "<"){return var1 < var2;}
+            else if(children[1]->data == ">"){return var1 > var2;}
+            else if(children[1]->data == "!="){return var1 != var2;}
+        }
+        else{
+            double var1 = mathDSolver(*children[0], NT);
+            double var2 = mathDSolver(*children[2], NT);
+            if(children[1]->data == "=="){return var1 == var2;}
+            else if(children[1]->data == ">="){return var1 >= var2;}
+            else if(children[1]->data == "<="){return var1 <= var2;}
+            else if(children[1]->data == "<"){return var1 < var2;}
+            else if(children[1]->data == ">"){return var1 > var2;}
+            else if(children[1]->data == "!="){return var1 != var2;}
+        }
+    }
+    else if(size == 4 && PT.data == "&&"){
+        if(!equalitySolver(*children[0], NT)){return false;}
+        if(true/*dealing with int math*/){
+            int var1 = mathISolver(*children[0], NT);
+            int var2 = mathISolver(*children[2], NT);
+            if(children[1]->data == "=="){return var1 == var2;}
+            else if(children[1]->data == ">="){return var1 >= var2;}
+            else if(children[1]->data == "<="){return var1 <= var2;}
+            else if(children[1]->data == "<"){return var1 < var2;}
+            else if(children[1]->data == ">"){return var1 > var2;}
+            else if(children[1]->data == "!="){return var1 != var2;}
+        }
+        else{
+            double var1 = mathDSolver(*children[0], NT);
+            double var2 = mathDSolver(*children[2], NT);
+            if(children[1]->data == "=="){return var1 == var2;}
+            else if(children[1]->data == ">="){return var1 >= var2;}
+            else if(children[1]->data == "<="){return var1 <= var2;}
+            else if(children[1]->data == "<"){return var1 < var2;}
+            else if(children[1]->data == ">"){return var1 > var2;}
+            else if(children[1]->data == "!="){return var1 != var2;}
+        }
+    }
+    else if(size == 1){return !equalitySolver(*children[0], NT);}
+    return false;
+}
