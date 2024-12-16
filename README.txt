@@ -27,3 +27,19 @@ Other options include the following:
 
 To clean the files type:
 make clean
+
+
+
+What works: 
+Lexer, parser, parse tree, and symbolgenerator completely work
+Debug flags for code generation work
+The direct linking of all pieces in the code generator works
+Syntax error handling work
+Extended variable table works
+Math solver should work, but isn't called to test
+Register allocation should work, but isn't called to test
+
+What doesn't work:
+Loops, function definition, and if statement control flow unimplemented
+Function call control flow unimplemented
+Identifier referencing is unimplemented
